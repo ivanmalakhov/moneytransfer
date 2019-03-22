@@ -1,15 +1,17 @@
 package com.revolute;
 
-import com.revolute.utils.request_logger.SparkUtils;
 import org.apache.log4j.Logger;
-
-import static spark.Spark.get;
 
 public class MainApplication {
   public static void main(String[] args) {
     Logger logger = Logger.getLogger(MainApplication.class);
-    SparkUtils.createServerWithRequestLog(logger);
+    Server server = new Server();
+    try {
+      server.startServer();
+    } catch (Exception e) {
+      logger.error("Couldn't start server", e);
+      System.exit(-2);
+    }
 
-    get("/hello", (request, response) -> "world");
   }
 }
