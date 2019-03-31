@@ -1,5 +1,7 @@
 package com.revolute.handler;
 
+import java.util.Objects;
+
 public class Answer {
 
   public Answer(int code) {
@@ -11,20 +13,14 @@ public class Answer {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-
     Answer answer = (Answer) o;
-
-    if (code != answer.code) return false;
-    if (body != null ? !body.equals(answer.body) : answer.body != null) return false;
-
-    return true;
+    return code == answer.code &&
+            Objects.equals(body, answer.body);
   }
 
   @Override
   public int hashCode() {
-    int result = code;
-    result = 31 * result + (body != null ? body.hashCode() : 0);
-    return result;
+    return Objects.hash(code, body);
   }
 
   @Override
