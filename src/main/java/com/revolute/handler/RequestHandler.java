@@ -1,11 +1,9 @@
 package com.revolute.handler;
 
-import com.revolute.dto.Validable;
-
 import java.util.Map;
 
-public interface RequestHandler<V extends Validable> {
+public interface RequestHandler<V> {
 
-  Answer process(V value, Map<String, String> urlParams, boolean shouldReturnHtml);
+  Answer process(V value, Map<String, String> urlParams);
 
 }

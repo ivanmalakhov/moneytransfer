@@ -6,57 +6,56 @@ import static spark.Spark.path;
 import static spark.Spark.port;
 import static spark.Spark.post;
 
-import com.google.gson.Gson;
 import com.revolute.handler.account.AccountCreateHandler;
-import com.revolute.service.AccountService;
-import com.revolute.service.impl.AccountServiceImpl;
+import com.revolute.handler.payment.DepositMoneyHandler;
+import com.revolute.handler.payment.TransferMoneyHandler;
+import com.revolute.handler.user.CreateUserHandler;
+import com.revolute.handler.account.GetAccountByUserHandler;
+import com.revolute.handler.payment.WithdrawMoneyHandler;
+import com.revolute.service.Model;
+import com.revolute.service.impl.ModelImpl;
 import com.revolute.utils.request_logger.SparkUtils;
 import org.apache.log4j.Logger;
 
-import spark.Request;
-import spark.Response;
-import spark.Route;
 import spark.Spark;
 
 /**
  * Server manipulation.
  */
-public class Server {
-  private Logger logger = Logger.getLogger(MainApplication.class);
+class Server {
+  private Logger logger = Logger.getLogger(Server.class);
 
   /**
    * Starting server and initialise routes and handlers.
    */
-  public void startServer() {
+  void startServer() {
     SparkUtils.createServerWithRequestLog(logger);
-
-    before("/*", (q, a) -> logger.info("Received api call"));
+    Model model = new ModelImpl();
+    before("/*", (q, a) -> logger.info("Received api call" + q.headers() + "  ;  " + q.toString()));
 
     path("/account", () -> {
-      AccountService accountService = new AccountServiceImpl();
-      post("/create", new AccountCreateHandler(accountService));
-      get("/balance", null);
+      post("/create", new AccountCreateHandler(model));
+      get("/getall", new GetAccountByUserHandler(model));
     });
     path("/payment", () -> {
-
-      post("/create", null);
-      get("/status", null);
+      post("/transfer", new TransferMoneyHandler(model));
+      post("/deposit", new DepositMoneyHandler(model));
+      post("/withdraw", new WithdrawMoneyHandler(model));
+    });
+    path("/user", () -> {
+      post("/create", new CreateUserHandler(model));
+      post("/update", null);
     });
 
-    get("/alive", new Route() {
-      @Override
-      public Object handle(Request request, Response response) throws Exception {
-        return "ok";
-      }
-    });
+    get("/alive", (request, response) -> "ok");
   }
 
-  public void startServer(int port) {
+  void startServer(int port) {
     port(port);
     startServer();
   }
 
-  public void stop() {
+  void stop() {
     Spark.stop();
   }
 }

@@ -1,12 +1,14 @@
 package com.revolute.service;
 
+import com.revolute.model.Account;
 import com.revolute.model.Payment;
-import com.revolute.model.User;
 
-import java.util.List;
+import java.math.BigDecimal;
 
-public interface PaymentService extends Model {
-  List<Payment> getPaymentsList();
-  void savePayment(Payment payment);
-  List<Payment> getTransferListByUser(User user);
+public interface PaymentService {
+  Payment transferMoney(Account srcAccount, Account dstAccount, BigDecimal amount);
+
+  Payment deposit(Account account, BigDecimal amount);
+
+  Payment withdraw(Account account, BigDecimal amount);
 }

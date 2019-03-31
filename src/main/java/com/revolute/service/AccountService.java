@@ -1,17 +1,15 @@
 package com.revolute.service;
 
-import com.revolute.dto.account.AccountResponse;
 import com.revolute.model.Account;
 import com.revolute.model.Currency;
 import com.revolute.model.User;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
-public interface AccountService extends Model{
-  // TODO убрать после создания механизма инициализации данных
-  AccountResponse create(Currency currency, User user);
-  List<Account> getAccountListByUser(UUID userId);
-  Account getAccountById(UUID id);
-  void updateAccount(Account account);
+public interface AccountService {
+  Account create(Currency currency, User user);
+
+  Set<Account> getAccountListByUser(Integer userId);
+
+  Account getAccountById(Integer userId, String accountNumber);
 }
