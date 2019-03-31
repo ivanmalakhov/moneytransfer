@@ -1,4 +1,4 @@
-package com.revolute.model;
+package com.revolute.dto;
 
 
 import java.util.Map;
@@ -22,13 +22,6 @@ public enum Currency {
     return name();
   }
 
-  public static Currency getByCode(String code) {
-    Currency currency = CURRENCIES_BY_CODE.get(code);
-    if (currency == null) {
-      throw new IllegalArgumentException("Missing currency for code [" + code + "]");
-    }
-    return currency;
-  }
   @Override
   public String toString() {
     return code() + "(" + currencyCode + ")";

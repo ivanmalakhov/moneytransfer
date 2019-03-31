@@ -1,4 +1,4 @@
-package com.revolute.model;
+package com.revolute.dto;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
 package com.revolute.service;
 
-import com.revolute.model.User;
+import com.revolute.dto.User;
 
 public interface UserService {
 

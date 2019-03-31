@@ -1,6 +1,6 @@
 package com.revolute.service.impl;
 
-import com.revolute.model.User;
+import com.revolute.dto.User;
 import com.revolute.service.UserService;
 import org.apache.log4j.Logger;
 

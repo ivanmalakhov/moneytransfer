@@ -3,7 +3,7 @@ package com.revolute.handler.payment;
 import com.revolute.dto.PaymentRequest;
 import com.revolute.handler.AbstractRequestHandler;
 import com.revolute.handler.Answer;
-import com.revolute.model.Payment;
+import com.revolute.dto.Payment;
 import com.revolute.service.Model;
 
 import java.util.Map;

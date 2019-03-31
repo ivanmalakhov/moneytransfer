@@ -1,6 +1,7 @@
-package com.revolute.model;
+package com.revolute.dto;
 
 import lombok.Data;
+
 import java.util.UUID;
 
 
@@ -22,6 +23,4 @@ public class Account {
     this.currency = currency;
   }
 
-  public Account() {
-  }
 }

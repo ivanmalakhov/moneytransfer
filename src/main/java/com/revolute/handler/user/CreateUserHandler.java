@@ -2,7 +2,7 @@ package com.revolute.handler.user;
 
 import com.revolute.handler.AbstractRequestHandler;
 import com.revolute.handler.Answer;
-import com.revolute.model.User;
+import com.revolute.dto.User;
 import com.revolute.service.Model;
 
 import java.util.Map;

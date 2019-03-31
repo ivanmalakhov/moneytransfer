@@ -2,7 +2,7 @@ package com.revolute;
 
 import com.revolute.handler.Answer;
 import com.revolute.handler.user.CreateUserHandler;
-import com.revolute.model.User;
+import com.revolute.dto.User;
 import com.revolute.service.Model;
 import com.revolute.service.impl.ModelImpl;
 import org.apache.log4j.Logger;

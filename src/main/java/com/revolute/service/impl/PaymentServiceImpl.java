@@ -1,7 +1,7 @@
 package com.revolute.service.impl;
 
-import com.revolute.model.Account;
-import com.revolute.model.Payment;
+import com.revolute.dto.Account;
+import com.revolute.dto.Payment;
 import com.revolute.service.PaymentService;
 
 import java.math.BigDecimal;

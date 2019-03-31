@@ -1,10 +1,10 @@
 package com.revolute.service.impl;
 
 import com.revolute.dto.PaymentRequest;
-import com.revolute.model.Account;
-import com.revolute.model.Currency;
-import com.revolute.model.Payment;
-import com.revolute.model.User;
+import com.revolute.dto.Account;
+import com.revolute.dto.Currency;
+import com.revolute.dto.Payment;
+import com.revolute.dto.User;
 import com.revolute.service.AccountService;
 import com.revolute.service.Model;
 import com.revolute.service.PaymentService;
@@ -119,10 +119,6 @@ public class ModelImpl implements Model {
 
   @Override
   public Payment withdraw(PaymentRequest paymentRequest) {
-    if (StringUtils.isBlank(paymentRequest.getSrcAccount())) {
-      logger.error(EMPTY_SOURCE_ACCOUNT_ID);
-      throw new IllegalArgumentException(EMPTY_SOURCE_ACCOUNT_ID);
-    }
     if (paymentRequest.getUserId() == null) {
       logger.error(EMPTY_USER_ID);
       throw new IllegalArgumentException(EMPTY_USER_ID);
@@ -130,6 +126,10 @@ public class ModelImpl implements Model {
     if (userService.userNotExist(paymentRequest.getUserId())) {
       logger.error(USER_NOT_FOUND);
       throw new IllegalArgumentException(USER_NOT_FOUND);
+    }
+    if (StringUtils.isBlank(paymentRequest.getSrcAccount())) {
+      logger.error(EMPTY_SOURCE_ACCOUNT_ID);
+      throw new IllegalArgumentException(EMPTY_SOURCE_ACCOUNT_ID);
     }
     Account srcAccount = accountService.getAccountById(paymentRequest.getUserId(), paymentRequest.getSrcAccount());
     if (null == srcAccount) {

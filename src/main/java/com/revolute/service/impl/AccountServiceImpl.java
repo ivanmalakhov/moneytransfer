@@ -1,8 +1,8 @@
 package com.revolute.service.impl;
 
-import com.revolute.model.Account;
-import com.revolute.model.Currency;
-import com.revolute.model.User;
+import com.revolute.dto.Account;
+import com.revolute.dto.Currency;
+import com.revolute.dto.User;
 import com.revolute.service.AccountService;
 import org.apache.log4j.Logger;
 

@@ -2,8 +2,8 @@ package com.revolute.handler.account;
 
 import com.revolute.handler.AbstractRequestHandler;
 import com.revolute.handler.Answer;
-import com.revolute.model.Account;
-import com.revolute.model.User;
+import com.revolute.dto.Account;
+import com.revolute.dto.User;
 import com.revolute.service.Model;
 
 import java.util.Map;
