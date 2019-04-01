@@ -21,10 +21,11 @@ public interface Model {
   /**
    * Creae new User
    *
-   * @param user user
+   * @param firstName firstName
+   * @param lastName lastName
    * @return User
    */
-  User createUser(User user);
+  User createUser(String firstName, String lastName);
 
   /**
    * Get All user Account

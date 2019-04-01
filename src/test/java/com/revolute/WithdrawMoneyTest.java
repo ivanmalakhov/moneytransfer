@@ -33,7 +33,7 @@ public class WithdrawMoneyTest {
     model = new ModelImpl();
     depositMoneyHandler = new DepositMoneyHandler(model);
     withdrawMoneyHandler = new WithdrawMoneyHandler(model);
-    user = model.createUser(new User("Smith", "John"));
+    user = model.createUser("Smith", "John");
     logger.info("New User: " + user);
     account1 = model.createAccount(Currency.EUR, user);
     logger.info("Account1: " + account1);

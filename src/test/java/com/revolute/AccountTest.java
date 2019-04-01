@@ -28,7 +28,7 @@ public class AccountTest {
     model = new ModelImpl();
     accountCreateHandler = new AccountCreateHandler(model);
     getAccountByUserHandler = new GetAccountByUserHandler(model);
-    user = model.createUser(new User("Smith", "John"));
+    user = model.createUser("Smith", "John");
   }
 
   @Test

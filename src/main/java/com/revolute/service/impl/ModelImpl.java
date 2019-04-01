@@ -146,7 +146,7 @@ public class ModelImpl implements Model {
 
 
   @Override
-  public User createUser(User user) {
-    return userService.create(user);
+  public User createUser(String firstName, String lastName) {
+    return userService.create(firstName, lastName);
   }
 }

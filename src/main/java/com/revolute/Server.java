@@ -5,6 +5,7 @@ import static spark.Spark.get;
 import static spark.Spark.path;
 import static spark.Spark.port;
 import static spark.Spark.post;
+import static spark.Spark.stop;
 
 import com.revolute.handler.account.AccountCreateHandler;
 import com.revolute.handler.payment.DepositMoneyHandler;
@@ -17,7 +18,6 @@ import com.revolute.service.impl.ModelImpl;
 import com.revolute.utils.request_logger.SparkUtils;
 import org.apache.log4j.Logger;
 
-import spark.Spark;
 
 /**
  * Server manipulation.
@@ -55,7 +55,7 @@ class Server {
     startServer();
   }
 
-  void stop() {
-    Spark.stop();
+  void stopServer() {
+    stop();
   }
 }

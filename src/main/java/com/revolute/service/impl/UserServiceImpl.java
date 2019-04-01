@@ -19,12 +19,6 @@ public enum UserServiceImpl implements UserService {
   }
 
   @Override
-  public User create(User user) {
-    users.put(user.getId(), user);
-    return user;
-  }
-
-  @Override
   public User create(String firstName, String lastName) {
     User user = new User(firstName, lastName);
     users.put(user.getId(), user);

@@ -3,21 +3,24 @@ package com.revolute;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import spark.Spark;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static spark.Spark.awaitInitialization;
 
-public class TestServer {
-  private Logger logger = Logger.getLogger(TestServer.class);
+@Ignore
+public class TestServerAlive {
+  private Logger logger = Logger.getLogger(TestServerAlive.class);
   private Server server = new Server();
 
   /**
    * Start server and awaiting initialization
    */
   @Before
-  public void setUp(){
+  public void setUp() {
     server.startServer(4568);
 
     awaitInitialization();
@@ -29,8 +32,9 @@ public class TestServer {
   @Test
   public void testAlive() {
     ApiTestUtils.TestResponse res = ApiTestUtils.request("GET", 4568, "/alive", null);
+    assertNotNull(res);
     assertEquals(200, res.status);
-    assertEquals("ok",res.body);
+    assertEquals("ok", res.body);
   }
 
   /**
@@ -38,6 +42,7 @@ public class TestServer {
    */
   @After
   public void stop() {
-    server.stop();
+    server.stopServer();
+
   }
 }

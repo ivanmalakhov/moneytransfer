@@ -15,7 +15,7 @@ public class CreateUserHandler extends AbstractRequestHandler<User> {
 
   @Override
   protected Answer processImpl(User value, Map<String, String> urlParams) {
-    User user = model.createUser(value);
+    User user = model.createUser(value.getFirstName(), value.getSecondName());
     return new Answer(201, dataToJson(user));
   }
 

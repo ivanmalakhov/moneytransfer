@@ -4,8 +4,6 @@ import com.revolute.dto.User;
 
 public interface UserService {
 
-  User create(User user);
-
   User create(String firstName, String lastName);
 
   boolean userExist(User user);
