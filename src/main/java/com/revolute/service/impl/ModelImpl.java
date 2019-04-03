@@ -12,6 +12,7 @@ import com.revolute.service.UserService;
 import org.apache.log4j.Logger;
 import spark.utils.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 public class ModelImpl implements Model {
@@ -35,7 +36,7 @@ public class ModelImpl implements Model {
   }
 
   @Override
-  public Account createAccount(Currency currency, User user) {
+  public synchronized Account createAccount(Currency currency, User user) {
     if (userService.userNotExist(user)) {
       logger.error(USER_NOT_FOUND);
       throw new IllegalArgumentException(USER_NOT_FOUND);
@@ -44,7 +45,7 @@ public class ModelImpl implements Model {
   }
 
   @Override
-  public Set<Account> getAccountListByUser(Integer userId) {
+  public synchronized Set<Account> getAccountListByUser(Integer userId) {
     if (userService.userNotExist(userId)) {
       logger.error(USER_NOT_FOUND);
       throw new IllegalArgumentException(USER_NOT_FOUND);
@@ -60,7 +61,7 @@ public class ModelImpl implements Model {
   }
 
   @Override
-  public Payment transferMoney(PaymentRequest paymentRequest) {
+  public synchronized Payment transferMoney(PaymentRequest paymentRequest) {
     if (StringUtils.isBlank(paymentRequest.getDstAccount())) {
       logger.error(EMPTY_DESTINATION_ACCOUNT_ID);
       throw new IllegalArgumentException(EMPTY_DESTINATION_ACCOUNT_ID);
@@ -96,7 +97,7 @@ public class ModelImpl implements Model {
   }
 
   @Override
-  public Payment deposit(PaymentRequest paymentRequest) {
+  public synchronized Payment deposit(PaymentRequest paymentRequest) {
     if (StringUtils.isBlank(paymentRequest.getDstAccount())) {
       logger.error(EMPTY_DESTINATION_ACCOUNT_ID);
       throw new IllegalArgumentException(EMPTY_DESTINATION_ACCOUNT_ID);
@@ -118,7 +119,7 @@ public class ModelImpl implements Model {
   }
 
   @Override
-  public Payment withdraw(PaymentRequest paymentRequest) {
+  public synchronized Payment withdraw(PaymentRequest paymentRequest) {
     if (paymentRequest.getUserId() == null) {
       logger.error(EMPTY_USER_ID);
       throw new IllegalArgumentException(EMPTY_USER_ID);
@@ -146,7 +147,12 @@ public class ModelImpl implements Model {
 
 
   @Override
-  public User createUser(String firstName, String lastName) {
+  public synchronized User createUser(String firstName, String lastName) {
     return userService.create(firstName, lastName);
+  }
+
+  @Override
+  public synchronized BigDecimal getTotalBalanceByUser(Integer userId) {
+    return accountService.getTotalBalanceByUser(userId);
   }
 }

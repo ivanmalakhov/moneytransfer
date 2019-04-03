@@ -55,4 +55,12 @@ public enum AccountServiceImpl implements AccountService {
     return account[0];
   }
 
+  @Override
+  public BigDecimal getTotalBalanceByUser(Integer userId) {
+    return userAccounts.get(userId)
+            .stream()
+            .map(Account::getBalance)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
 }

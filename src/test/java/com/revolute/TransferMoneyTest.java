@@ -2,6 +2,7 @@ package com.revolute;
 
 import com.revolute.dto.PaymentRequest;
 import com.revolute.handler.Answer;
+import com.revolute.handler.account.GetTotalBalanceHandler;
 import com.revolute.handler.payment.DepositMoneyHandler;
 import com.revolute.handler.payment.TransferMoneyHandler;
 import com.revolute.handler.payment.WithdrawMoneyHandler;
@@ -18,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Set;
 
+import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 
 public class TransferMoneyTest {
@@ -26,6 +28,8 @@ public class TransferMoneyTest {
   private TransferMoneyHandler transferMoneyHandler;
   private DepositMoneyHandler depositMoneyHandler;
   private WithdrawMoneyHandler withdrawMoneyHandler;
+  private GetTotalBalanceHandler getTotalBalanceHandler;
+
   private User user;
   private Account account1, account2;
   private static final int DELAY = 10;
@@ -36,6 +40,7 @@ public class TransferMoneyTest {
     transferMoneyHandler = new TransferMoneyHandler(model);
     depositMoneyHandler = new DepositMoneyHandler(model);
     withdrawMoneyHandler = new WithdrawMoneyHandler(model);
+    getTotalBalanceHandler = new GetTotalBalanceHandler(model);
     user = model.createUser("Smith", "John");
     logger.info("New User: " + user);
     account1 = model.createAccount(Currency.EUR, user);
@@ -182,7 +187,14 @@ public class TransferMoneyTest {
 
     Thread[] threads = new Thread[balance];
     Runnable r = () -> {
-      Answer answer = transferMoneyHandler.process(paymentRequest, Collections.emptyMap());
+      try {
+        Answer answer = transferMoneyHandler.process(paymentRequest, Collections.emptyMap());
+        logger.info(Thread.currentThread() + "; TotalBalance" + getTotalBalanceHandler.process(user, Collections.emptyMap()).getBody());
+        sleep((int) (DELAY * Math.random()));
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+
     };
     for (int i = 0; i < balance; i++) {
       threads[i] = new Thread(r);
@@ -196,6 +208,7 @@ public class TransferMoneyTest {
       }
     }
 
+    logger.info("Итог: " + getTotalBalanceHandler.process(user, Collections.emptyMap()).getBody());
 
     Set<Account> accounts = model.getAccountListByUser(user.getId());
     BigDecimal sum = BigDecimal.ZERO;

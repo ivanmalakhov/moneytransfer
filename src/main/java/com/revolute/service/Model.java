@@ -6,6 +6,7 @@ import com.revolute.dto.Currency;
 import com.revolute.dto.Payment;
 import com.revolute.dto.User;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 public interface Model {
@@ -59,4 +60,11 @@ public interface Model {
    */
   Payment deposit(PaymentRequest paymentRequest);
 
+  /**
+   * Get total balance for all user account
+   *
+   * @param userId user id
+   * @return total balance
+   */
+  BigDecimal getTotalBalanceByUser(Integer userId);
 }

@@ -4,6 +4,7 @@ import com.revolute.dto.Account;
 import com.revolute.dto.Currency;
 import com.revolute.dto.User;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 public interface AccountService {
@@ -12,4 +13,6 @@ public interface AccountService {
   Set<Account> getAccountListByUser(Integer userId);
 
   Account getAccountById(Integer userId, String accountNumber);
+
+  BigDecimal getTotalBalanceByUser(Integer userId);
 }
