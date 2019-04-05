@@ -8,6 +8,7 @@ import static spark.Spark.post;
 import static spark.Spark.stop;
 
 import com.revolute.handler.account.AccountCreateHandler;
+import com.revolute.handler.account.GetTotalBalanceHandler;
 import com.revolute.handler.payment.DepositMoneyHandler;
 import com.revolute.handler.payment.TransferMoneyHandler;
 import com.revolute.handler.user.CreateUserHandler;
@@ -36,6 +37,7 @@ class Server {
     path("/account", () -> {
       post("/create", new AccountCreateHandler(model));
       get("/getall", new GetAccountByUserHandler(model));
+      get("/totalbalance", new GetTotalBalanceHandler(model));
     });
     path("/payment", () -> {
       post("/transfer", new TransferMoneyHandler(model));

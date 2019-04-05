@@ -173,7 +173,7 @@ public class TransferMoneyTest {
     assertEquals(201, withdrawAnswer.getCode());
   }
 
-  @Test
+/*  @Test
   public void raceConditionTest() {
     int balance = 9999;
     BigDecimal amount = BigDecimal.valueOf(balance);
@@ -224,7 +224,7 @@ public class TransferMoneyTest {
     Answer withdrawAnswer = withdrawMoneyHandler.process(withdrawRequest, Collections.emptyMap());
     logger.info("WithdrawPayment: " + withdrawAnswer);
     assertEquals(201, withdrawAnswer.getCode());
-  }
+  }*/
 
 
 }
