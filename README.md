@@ -9,6 +9,8 @@ RESTful API for money transfers between accounts
 - **gson** 2.8.5 -  work with JSON 
 - **junit** 4.11 - unit testing
 
+I used tutorial from http://sparkjava.com/tutorials/ to create simple webserver
+
 ## Features
 - Create user.
 - Create account
@@ -22,6 +24,7 @@ RESTful API for money transfers between accounts
 ## Starting the application
 1. Clone the repo and run the following command: `mvn clean package`
 2. This will create a single fat jar which can be executed with `java -jar target/moneytransfer-1.0-SNAPSHOT-jar-with-dependencies.jar`
+3. All functionality checked by junit tests.
 
 ## Docs
 ### User
