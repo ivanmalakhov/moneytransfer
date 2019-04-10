@@ -215,6 +215,8 @@ Server will response with information about payment transaction, looks like
 }
 ```
 ###TODO list
+- fix feedback bug: 
+hardly readable code, lots of commented or not used lines, typos, small code reuse poor REST: endpoint for getting the list of entities is called getall, expects GET requests with body REST API is not tested except of one method
 - Support for different currencies
 - Money exchange 
 - Separate transaction creation and processing with thread-safe queues(ConcurrentLinkedQueue or another)
