@@ -1,15 +1,15 @@
 # MoneyTransfer test task 
 
-RESTful API for money transfers between accounts
+RESTFull API for money transfers between accounts
 
 ## Libraries used
-- **sparkjava**  2.7.2 - micro framework for creating web applicationswith minimal effort
+- **sparkjava**  2.7.2 - micro framework for creating web applications with minimal effort
 - **projectlombok** 1.18.6 -  
 - **jackson** 2.9.8 - work with JSON
 - **gson** 2.8.5 -  work with JSON 
 - **junit** 4.11 - unit testing
 
-I used tutorial from http://sparkjava.com/tutorials/ to create simple webserver
+I used tutorial from http://sparkjava.com/tutorials/ to create simple WebServer
 
 ## Features
 - Create user.
@@ -28,7 +28,7 @@ I used tutorial from http://sparkjava.com/tutorials/ to create simple webserver
 
 ## Docs
 ### User
-#### Creat User
+#### Create User
 
 ## Using the REST API
 ### Accounts
@@ -37,15 +37,15 @@ To create user send POST request:
 ```
 curl -XPOST http://localhost:4567/user/create -d '
   {
-   "firstName" : "Ivanov",
-   "secondName" : "Ivan" 
+   "firstName" : "FirstName",
+   "secondName" : "LastName" 
    }'
 ```
 The server will respond with information about the created user in a JSON format:
 ```
 {
-  "firstName" : "Ivanov",
-  "secondName" : "Ivan",
+  "firstName" : "FirstName",
+  "secondName" : "LastName",
   "id" : 285246008
 }
 ```
@@ -56,8 +56,8 @@ curl -XPOST http://localhost:4567/account/create -d '
 {
     "currency": "EUR",
     "user": {
-        "firstName": "Ivanov",
-        "secondName": "Ivan",
+        "firstName": "FirstName",
+        "secondName": "LastName",
         "id": 285246008
     }
 }'
@@ -69,8 +69,8 @@ The server will respond with information about the created account in a JSON for
   "number" : "40702EUR1300200814",
   "balance" : 0,
   "user" : {
-    "firstName" : "Ivanov",
-    "secondName" : "Ivan",
+    "firstName" : "FirstName",
+    "secondName" : "LastName",
     "id" : 285246008
   },
   "currency" : "EUR"
@@ -81,8 +81,8 @@ To get information about all account you can submit a GET request :
 ```
 curl -XGET http://localhost:4567/account/getall -d'
 {
-    "firstName" : "Ivanov",
-    "secondName" : "Ivan",
+    "firstName" : "FirstName",
+    "secondName" : "LastName",
     "id" : 285246008
 }'
 ```
@@ -93,8 +93,8 @@ The server will respond with information about the all user accounts in a JSON f
   "number" : "40702EUR1300200814",
   "balance" : 0,
   "user" : {
-    "firstName" : "Ivanov",
-    "secondName" : "Ivan",
+    "firstName" : "FirstName",
+    "secondName" : "LastName",
     "id" : 285246008
   },
   "currency" : "EUR"
@@ -106,8 +106,8 @@ To get information about total balance on all user accounts, you can submit a GE
 ```
 curl -XGET http://localhost:4567/account/totalbalance -d'
 {
-    "firstName" : "Ivanov",
-    "secondName" : "Ivan",
+    "firstName" : "FirstName",
+    "secondName" : "LastName",
     "id" : 285246008
 }'
 ```
@@ -133,8 +133,8 @@ The server will response with information about payment transaction, looks like
     "number" : "40702EUR174996961",
     "balance" : 50,
     "user" : {
-      "firstName" : "Ivanov",
-      "secondName" : "Ivan",
+      "firstName" : "FirstName",
+      "secondName" : "LastName",
       "id" : 285246008
     },
     "currency" : "EUR"
@@ -162,8 +162,8 @@ Server will response with information about payment transaction, looks like
     "number" : "40702EUR174996961",
     "balance" : 40,
     "user" : {
-      "firstName" : "Ivanov",
-      "secondName" : "Ivan",
+      "firstName" : "FirstName",
+      "secondName" : "LastName",
       "id" : 285246008
     },
     "currency" : "EUR"
@@ -193,8 +193,8 @@ Server will response with information about payment transaction, looks like
     "number" : "40702EUR174996961",
     "balance" : 20,
     "user" : {
-      "firstName" : "Ivanov",
-      "secondName" : "Ivan",
+      "firstName" : "FirstName",
+      "secondName" : "LastName",
       "id" : 285246008
     },
     "currency" : "EUR"
@@ -204,8 +204,8 @@ Server will response with information about payment transaction, looks like
     "number" : "40702EUR1689053154",
     "balance" : 10,
     "user" : {
-      "firstName" : "Ivanov",
-      "secondName" : "Ivan",
+      "firstName" : "FirstName",
+      "secondName" : "LastName",
       "id" : 285246008
     },
     "currency" : "EUR"
@@ -216,7 +216,7 @@ Server will response with information about payment transaction, looks like
 ```
 ###TODO list
 - fix feedback bug: 
-hardly readable code, lots of commented or not used lines, typos, small code reuse poor REST: endpoint for getting the list of entities is called getall, expects GET requests with body REST API is not tested except of one method
+hardly readable code, lots of commented or not used lines, typos, small code reuse poor REST: endpoint for getting the list of entities is called getAll, expects GET requests with body REST API is not tested except of one method
 - Support for different currencies
 - Money exchange 
 - Separate transaction creation and processing with thread-safe queues(ConcurrentLinkedQueue or another)
