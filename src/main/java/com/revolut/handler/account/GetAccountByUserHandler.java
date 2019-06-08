@@ -2,7 +2,7 @@ package com.revolut.handler.account;
 
 import com.revolut.handler.AbstractRequestHandler;
 import com.revolut.handler.Answer;
-import com.revolut.dto.Account;
+import com.revolut.data.Account;
 import com.revolut.data.User;
 import com.revolut.service.Model;
 

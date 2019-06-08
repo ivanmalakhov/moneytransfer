@@ -4,7 +4,7 @@ import com.revolut.dto.PaymentRequest;
 import com.revolut.handler.Answer;
 import com.revolut.handler.payment.DepositMoneyHandler;
 import com.revolut.handler.payment.WithdrawMoneyHandler;
-import com.revolut.dto.Account;
+import com.revolut.data.Account;
 import com.revolut.dto.Currency;
 import com.revolut.data.User;
 import com.revolut.service.Model;
@@ -16,6 +16,8 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.Collections;
 
+import static com.revolut.TestJson.USER_JSON;
+import static com.revolut.TestUtils.createUser;
 import static org.junit.Assert.assertEquals;
 
 public class WithdrawMoneyTest {
@@ -26,13 +28,14 @@ public class WithdrawMoneyTest {
   private WithdrawMoneyHandler withdrawMoneyHandler;
   private User user;
   private Account account1;
+  Model model;
 
   @Before
   public void init() {
-    Model model = new ModelImpl();
+    model = new ModelImpl();
     depositMoneyHandler = new DepositMoneyHandler(model);
     withdrawMoneyHandler = new WithdrawMoneyHandler(model);
-    user = model.createUser("Smith", "John");
+    user = createUser(model, USER_JSON);
     logger.info("New User: " + user);
     account1 = model.createAccount(Currency.EUR, user);
     logger.info("Account1: " + account1);

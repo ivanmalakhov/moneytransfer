@@ -1,7 +1,7 @@
 package com.revolut.service;
 
 import com.revolut.dto.PaymentRequest;
-import com.revolut.dto.Account;
+import com.revolut.data.Account;
 import com.revolut.dto.Currency;
 import com.revolut.dto.Payment;
 import com.revolut.dto.ResponseMessage;
@@ -22,15 +22,13 @@ public interface Model {
    * @return Account
    */
   Account createAccount(Currency currency, User user);
-
   /**
-   * Create new User.
+   * Create new account.
    *
-   * @param firstName firstName
-   * @param lastName  lastName
-   * @return User
+   * @param data Json with request data
+   * @return Account
    */
-  User createUser(String firstName, String lastName);
+  ResponseMessage createAccount(String data);
 
   /**
    * Create new User without handler.

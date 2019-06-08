@@ -1,6 +1,6 @@
 package com.revolut.service;
 
-import com.revolut.dto.Account;
+import com.revolut.data.Account;
 import com.revolut.dto.Payment;
 
 import java.math.BigDecimal;

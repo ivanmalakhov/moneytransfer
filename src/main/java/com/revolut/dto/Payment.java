@@ -1,5 +1,6 @@
 package com.revolut.dto;
 
+import com.revolut.data.Account;
 import lombok.Data;
 
 import java.math.BigDecimal;

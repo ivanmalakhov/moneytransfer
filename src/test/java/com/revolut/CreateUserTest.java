@@ -1,6 +1,5 @@
 package com.revolut;
 
-import com.revolut.data.User;
 import com.revolut.dto.ResponseMessage;
 import com.revolut.dto.ResponseStatus;
 import com.revolut.service.Model;
@@ -9,6 +8,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.revolut.TestJson.USER_JSON;
 import static org.junit.Assert.assertEquals;
 
 public class CreateUserTest {
@@ -18,9 +18,7 @@ public class CreateUserTest {
   public void userExists() {
     Model model = new ModelImpl();
 
-    User user = new User("John", "Smith");
-    String userJson = "{\"firstName\":\"John\",\"lastName\":\"Smith\"}";
-    ResponseMessage responseMessage = model.createUser(userJson);
+    ResponseMessage responseMessage = model.createUser(USER_JSON);
     logger.info("New user: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
   }

@@ -1,9 +1,10 @@
 package com.revolut;
 
-import com.revolut.dto.Account;
+import com.google.gson.Gson;
+import com.revolut.data.Account;
+import com.revolut.data.User;
 import com.revolut.dto.Currency;
 import com.revolut.dto.PaymentRequest;
-import com.revolut.data.User;
 import com.revolut.handler.Answer;
 import com.revolut.handler.account.GetTotalBalanceHandler;
 import com.revolut.handler.payment.DepositMoneyHandler;
@@ -21,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import static com.revolut.TestJson.USER_JSON;
+import static com.revolut.TestUtils.createUser;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 
@@ -36,6 +39,7 @@ public class ConcurrencyTest {
   private static final BigDecimal MAX_AMOUNT = BigDecimal.valueOf(10);
   private static final int DELAY = 10;
   private List<Account> accounts = new ArrayList<>();
+  Gson gson = new Gson();
 
   @Before
   public void init() {
@@ -43,10 +47,11 @@ public class ConcurrencyTest {
     transferMoneyHandler = new TransferMoneyHandler(model);
     depositMoneyHandler = new DepositMoneyHandler(model);
     getTotalBalanceHandler = new GetTotalBalanceHandler(model);
-    user = model.createUser("Smith", "John");
+    user = createUser(model, USER_JSON);
     logger.info("New User: " + user);
 
   }
+
 
   // deposit money
   private void createAccountAndDepositMoney(BigDecimal amount) {
@@ -104,8 +109,9 @@ public class ConcurrencyTest {
         e.printStackTrace();
       }
     }
-    if (exc[0] != null)
+    if (exc[0] != null) {
       throw exc[0];
+    }
   }
 
   @After

@@ -1,51 +1,61 @@
 package com.revolut;
 
-import com.revolut.dto.AccountRequest;
-import com.revolut.handler.Answer;
-import com.revolut.handler.account.AccountCreateHandler;
-import com.revolut.handler.account.GetAccountByUserHandler;
-import com.revolut.dto.Currency;
+import com.google.gson.Gson;
 import com.revolut.data.User;
+import com.revolut.dto.AccountDTO;
+import com.revolut.dto.Currency;
+import com.revolut.dto.ResponseMessage;
+import com.revolut.dto.ResponseStatus;
+import com.revolut.handler.Answer;
+import com.revolut.handler.account.GetAccountByUserHandler;
 import com.revolut.service.Model;
 import com.revolut.service.impl.ModelImpl;
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 
+import static com.revolut.TestJson.USER_JSON;
+import static com.revolut.TestUtils.createUser;
 import static org.junit.Assert.assertEquals;
 
 public class AccountTest {
-  private AccountCreateHandler accountCreateHandler;
   private GetAccountByUserHandler getAccountByUserHandler;
-  private Logger logger = Logger.getLogger(AccountTest.class);
+  private Logger logger = LoggerFactory.getLogger(AccountTest.class);
   private User user;
+  private Gson gson = new Gson();
+  Model model;
 
   @Before
   public void init() {
-    Model model = new ModelImpl();
-    accountCreateHandler = new AccountCreateHandler(model);
+    model = new ModelImpl();
     getAccountByUserHandler = new GetAccountByUserHandler(model);
-    user = model.createUser("Smith", "John");
+    user = createUser(model, USER_JSON);
+
   }
 
   @Test
   public void fakeUserTest() {
-    AccountRequest accountRequest = new AccountRequest();
-    accountRequest.setCurrency(Currency.EUR);
-    accountRequest.setUser(new User("Smith", "John"));
-    Answer answer = accountCreateHandler.process(accountRequest, Collections.emptyMap());
-    assertEquals(404, answer.getCode());
+    AccountDTO accountDTO = new AccountDTO();
+    accountDTO.setCurrency(Currency.EUR);
+    accountDTO.setUserId(123);
+
+    ResponseMessage responseMessage = model.createAccount(gson.toJson(accountDTO));
+    logger.info("New account: {}", responseMessage.getJsonMessage());
+    assertEquals(ResponseStatus.USER_DOES_NOT_EXIST, responseMessage.getStatus());
+
   }
 
   @Test
   public void createAccountTestOK() {
-    AccountRequest accountRequest = new AccountRequest();
-    accountRequest.setCurrency(Currency.EUR);
-    accountRequest.setUser(user);
-    Answer answer = accountCreateHandler.process(accountRequest, Collections.emptyMap());
-    assertEquals(201, answer.getCode());
+    AccountDTO accountDTO = new AccountDTO();
+    accountDTO.setCurrency(Currency.EUR);
+    accountDTO.setUserId(user.getId());
+    ResponseMessage responseMessage = model.createAccount(gson.toJson(accountDTO));
+    logger.info("New account: {}", responseMessage.getJsonMessage());
+    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
   }
 
   @Test
@@ -56,13 +66,15 @@ public class AccountTest {
 
   @Test
   public void getAllAccountTest() {
-    AccountRequest accountRequest = new AccountRequest();
-    accountRequest.setCurrency(Currency.EUR);
-    accountRequest.setUser(user);
-    Answer answer = accountCreateHandler.process(accountRequest, Collections.emptyMap());
-    assertEquals(201, answer.getCode());
+    AccountDTO accountDTO = new AccountDTO();
+    accountDTO.setCurrency(Currency.EUR);
+    accountDTO.setUserId(user.getId());
 
-    answer = getAccountByUserHandler.process(user, Collections.emptyMap());
+    ResponseMessage responseMessage = model.createAccount(gson.toJson(accountDTO));
+    logger.info("New account: {}", responseMessage.getJsonMessage());
+    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
+
+    Answer answer = getAccountByUserHandler.process(user, Collections.emptyMap());
     assertEquals(201, answer.getCode());
   }
 }

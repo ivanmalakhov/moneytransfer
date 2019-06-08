@@ -1,6 +1,6 @@
-package com.revolut.dto;
+package com.revolut.data;
 
-import com.revolut.data.User;
+import com.revolut.dto.Currency;
 import lombok.Data;
 
 import java.math.BigDecimal;

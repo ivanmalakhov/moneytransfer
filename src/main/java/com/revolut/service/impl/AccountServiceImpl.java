@@ -1,6 +1,6 @@
 package com.revolut.service.impl;
 
-import com.revolut.dto.Account;
+import com.revolut.data.Account;
 import com.revolut.dto.Currency;
 import com.revolut.data.User;
 import com.revolut.service.AccountService;

@@ -17,7 +17,15 @@ public enum ResponseStatus {
   /**
    * New client cannot be created.
    */
-  USER_CREATE_ERROR(530, "New client cannot be created");
+  USER_CREATE_ERROR(530, "New user cannot be created"),
+  /**
+   * New account cannot be created.
+   */
+  ACCOUNT_CREATE_ERROR(531, "New user cannot be created"),
+  /**
+   * User doesn't exist
+   */
+  USER_DOES_NOT_EXIST(532, "User does not exist");
 
   /**
    * Int Code.
