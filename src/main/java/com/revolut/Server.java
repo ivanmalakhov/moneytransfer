@@ -1,16 +1,15 @@
 package com.revolut;
 
-import com.revolut.handler.account.AccountCreateHandler;
+import com.revolut.dto.ResponseMessage;
 import com.revolut.handler.account.GetAccountByUserHandler;
 import com.revolut.handler.account.GetTotalBalanceHandler;
 import com.revolut.handler.payment.DepositMoneyHandler;
 import com.revolut.handler.payment.TransferMoneyHandler;
 import com.revolut.handler.payment.WithdrawMoneyHandler;
-import com.revolut.handler.user.CreateUserHandler;
 import com.revolut.service.Model;
 import com.revolut.service.impl.ModelImpl;
-import com.revolut.utils.request_logger.SparkUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static spark.Spark.before;
 import static spark.Spark.get;
@@ -24,18 +23,32 @@ import static spark.Spark.stop;
  * Server manipulation.
  */
 class Server {
-  private Logger logger = Logger.getLogger(Server.class);
+  /**
+   * Class logger.
+   */
+  private final Logger logger = LoggerFactory.getLogger(Server.class);
+  /**
+   * Response/request type.
+   */
+  private static final String JSON_TYPE = "application/json";
 
   /**
    * Starting server and initialise routes and handlers.
    */
   void startServer() {
-    SparkUtils.createServerWithRequestLog(logger);
     Model model = new ModelImpl();
-    before("/*", (q, a) -> logger.info("Received api call" + q.headers() + "  ;  " + q.toString()));
+    before("/*", (q, a) ->
+            logger.info("Received api call"
+                    + q.headers()
+                    + "  ;  " + q.toString()));
 
     path("/account", () -> {
-      post("/create", new AccountCreateHandler(model));
+      post("/create", (request, response) -> {
+        response.type(JSON_TYPE);
+        ResponseMessage message = model.createAccount(request.body());
+        response.status(message.getStatus().getCode());
+        return message.getJsonMessage();
+      });
       get("/getall", new GetAccountByUserHandler(model));
       get("/totalbalance", new GetTotalBalanceHandler(model));
     });
@@ -45,18 +58,31 @@ class Server {
       post("/withdraw", new WithdrawMoneyHandler(model));
     });
     path("/user", () -> {
-      post("/create", new CreateUserHandler(model));
+      post("/create", (request, response) -> {
+        response.type(JSON_TYPE);
+        ResponseMessage message = model.createUser(request.body());
+        response.status(message.getStatus().getCode());
+        return message.getJsonMessage();
+      });
       post("/update", null);
     });
 
     get("/alive", (request, response) -> "ok");
   }
 
-  void startServer(int port) {
+  /**
+   * Starting server.
+   *
+   * @param port port number
+   */
+  void startServer(final int port) {
     port(port);
     startServer();
   }
 
+  /**
+   * Server shutdown.
+   */
   void stopServer() {
     stop();
   }

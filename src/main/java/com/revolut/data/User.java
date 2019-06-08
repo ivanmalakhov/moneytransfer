@@ -1,4 +1,4 @@
-package com.revolut.dto;
+package com.revolut.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

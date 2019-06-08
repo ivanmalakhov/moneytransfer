@@ -1,15 +1,22 @@
 package com.revolut.service.impl;
 
-import com.revolut.dto.PaymentRequest;
-import com.revolut.dto.Account;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.revolut.data.User;
+import com.revolut.data.Account;
+import com.revolut.dto.AccountDTO;
 import com.revolut.dto.Currency;
 import com.revolut.dto.Payment;
-import com.revolut.dto.User;
+import com.revolut.dto.PaymentRequest;
+import com.revolut.dto.ResponseMessage;
+import com.revolut.dto.ResponseStatus;
+import com.revolut.dto.UserDTO;
 import com.revolut.service.AccountService;
 import com.revolut.service.Model;
 import com.revolut.service.PaymentService;
 import com.revolut.service.UserService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.utils.StringUtils;
 
 import java.math.BigDecimal;
@@ -72,7 +79,7 @@ public final class ModelImpl implements Model {
   /**
    * Logger.
    */
-  private final Logger logger = Logger.getLogger(ModelImpl.class);
+  private final Logger logger = LoggerFactory.getLogger(ModelImpl.class);
 
   /**
    * Main constructor.
@@ -91,6 +98,47 @@ public final class ModelImpl implements Model {
       throw new IllegalArgumentException(USER_NOT_FOUND);
     }
     return accountService.create(currency, user);
+  }
+
+  @Override
+  public ResponseMessage createAccount(final String data) {
+    Gson gson = new Gson();
+    logger.info("Create new account Request: {}", data);
+    ResponseMessage responseMessage = new ResponseMessage();
+    if (data.isEmpty()) {
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
+    }
+    AccountDTO accountDTO;
+    try {
+      JsonObject jsonObject = gson.fromJson(data, JsonObject.class);
+      accountDTO = gson.fromJson(jsonObject, AccountDTO.class);
+    } catch (Exception e) {
+      logger.error("JSON parsing error. Input string: {} ;", data, e);
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
+    }
+    User user = userService.getUser(accountDTO.getUserId());
+    if (user == null) {
+      logger.error("User with id={} doesn't exist", accountDTO.getUserId().toString());
+      responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
+      return responseMessage;
+
+    }
+    Account account = accountService.create(accountDTO.getCurrency(), user);
+    if (account == null) {
+      logger.warn("Error creating new account.");
+      responseMessage.setStatus(ResponseStatus.ACCOUNT_CREATE_ERROR);
+      return responseMessage;
+    }
+    responseMessage.setStatus(ResponseStatus.SUCCESS);
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("Account", gson.toJsonTree(account, Account.class));
+    responseMessage.setJsonMessage(jsonObject);
+    logger.info("Create new account. Response: {}",
+                responseMessage.getJsonMessage());
+    return responseMessage;
+
   }
 
   @Override
@@ -148,8 +196,8 @@ public final class ModelImpl implements Model {
     }
 
     return paymentService.transferMoney(srcAccount,
-            dstAccount,
-            paymentRequest.getAmount());
+                                        dstAccount,
+                                        paymentRequest.getAmount());
   }
 
   @Override
@@ -205,11 +253,39 @@ public final class ModelImpl implements Model {
     return paymentService.withdraw(srcAccount, paymentRequest.getAmount());
   }
 
-
   @Override
-  public synchronized User createUser(final String firstName,
-                                      final String lastName) {
-    return userService.create(firstName, lastName);
+  public ResponseMessage createUser(final String data) {
+    Gson gson = new Gson();
+    logger.info("Create new client. Request: {}", data);
+    ResponseMessage responseMessage = new ResponseMessage();
+    if (data.isEmpty()) {
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
+    }
+
+    UserDTO userDTO;
+    try {
+      JsonObject jsonObject = gson.fromJson(data, JsonObject.class);
+      userDTO = gson.fromJson(jsonObject, UserDTO.class);
+    } catch (Exception e) {
+      logger.error("JSON parsing error. Input string: {} ;", data, e);
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
+    }
+    User user = userService.create(userDTO.getFirstName(),
+                                   userDTO.getLastName());
+    if (user == null) {
+      logger.warn("Error creating new client.");
+      responseMessage.setStatus(ResponseStatus.USER_CREATE_ERROR);
+      return responseMessage;
+    }
+    responseMessage.setStatus(ResponseStatus.SUCCESS);
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("User", gson.toJsonTree(user, User.class));
+    responseMessage.setJsonMessage(jsonObject);
+    logger.info("Create new client. Response: {}",
+                responseMessage.getJsonMessage());
+    return responseMessage;
   }
 
   @Override

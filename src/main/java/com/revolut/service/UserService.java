@@ -1,6 +1,6 @@
 package com.revolut.service;
 
-import com.revolut.dto.User;
+import com.revolut.data.User;
 
 public interface UserService {
 
