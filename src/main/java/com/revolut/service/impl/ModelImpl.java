@@ -120,7 +120,7 @@ public final class ModelImpl implements Model {
     }
     User user = userService.getUser(accountDTO.getUserId());
     if (user == null) {
-      logger.error("User with id={} doesn't exist", accountDTO.getUserId().toString());
+      logger.error("User with id={} doesn't exist", accountDTO.getUserId());
       responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
       return responseMessage;
 
