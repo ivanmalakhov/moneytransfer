@@ -2,7 +2,7 @@ package com.revolut.service;
 
 import com.revolut.dto.Account;
 import com.revolut.dto.Currency;
-import com.revolut.dto.User;
+import com.revolut.data.User;
 
 import java.math.BigDecimal;
 import java.util.Set;

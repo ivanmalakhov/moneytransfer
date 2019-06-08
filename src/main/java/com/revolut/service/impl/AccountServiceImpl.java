@@ -2,7 +2,7 @@ package com.revolut.service.impl;
 
 import com.revolut.dto.Account;
 import com.revolut.dto.Currency;
-import com.revolut.dto.User;
+import com.revolut.data.User;
 import com.revolut.service.AccountService;
 import org.apache.log4j.Logger;
 

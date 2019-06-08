@@ -5,7 +5,7 @@ import com.revolut.handler.Answer;
 import com.revolut.handler.account.AccountCreateHandler;
 import com.revolut.handler.account.GetAccountByUserHandler;
 import com.revolut.dto.Currency;
-import com.revolut.dto.User;
+import com.revolut.data.User;
 import com.revolut.service.Model;
 import com.revolut.service.impl.ModelImpl;
 import org.apache.log4j.Logger;

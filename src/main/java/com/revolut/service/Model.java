@@ -4,7 +4,8 @@ import com.revolut.dto.PaymentRequest;
 import com.revolut.dto.Account;
 import com.revolut.dto.Currency;
 import com.revolut.dto.Payment;
-import com.revolut.dto.User;
+import com.revolut.dto.ResponseMessage;
+import com.revolut.data.User;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -26,10 +27,18 @@ public interface Model {
    * Create new User.
    *
    * @param firstName firstName
-   * @param lastName lastName
+   * @param lastName  lastName
    * @return User
    */
   User createUser(String firstName, String lastName);
+
+  /**
+   * Create new User without handler.
+   *
+   * @param data Json with data about new user
+   * @return ResponseMessage
+   */
+  ResponseMessage createUser(String data);
 
   /**
    * Get All user Account.

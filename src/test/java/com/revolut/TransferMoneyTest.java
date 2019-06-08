@@ -3,7 +3,7 @@ package com.revolut;
 import com.revolut.dto.Account;
 import com.revolut.dto.Currency;
 import com.revolut.dto.PaymentRequest;
-import com.revolut.dto.User;
+import com.revolut.data.User;
 import com.revolut.handler.Answer;
 import com.revolut.handler.payment.DepositMoneyHandler;
 import com.revolut.handler.payment.TransferMoneyHandler;

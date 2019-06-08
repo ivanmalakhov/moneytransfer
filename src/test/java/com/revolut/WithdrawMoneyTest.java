@@ -6,7 +6,7 @@ import com.revolut.handler.payment.DepositMoneyHandler;
 import com.revolut.handler.payment.WithdrawMoneyHandler;
 import com.revolut.dto.Account;
 import com.revolut.dto.Currency;
-import com.revolut.dto.User;
+import com.revolut.data.User;
 import com.revolut.service.Model;
 import com.revolut.service.impl.ModelImpl;
 import org.apache.log4j.Logger;

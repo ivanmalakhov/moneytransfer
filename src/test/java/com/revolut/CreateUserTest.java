@@ -1,33 +1,27 @@
 package com.revolut;
 
-import com.revolut.handler.Answer;
-import com.revolut.handler.user.CreateUserHandler;
-import com.revolut.dto.User;
+import com.revolut.data.User;
+import com.revolut.dto.ResponseMessage;
+import com.revolut.dto.ResponseStatus;
 import com.revolut.service.Model;
 import com.revolut.service.impl.ModelImpl;
-import org.apache.log4j.Logger;
-import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Collections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 
 public class CreateUserTest {
-  private CreateUserHandler createUserHandler;
-  private Logger logger = Logger.getLogger(CreateUserTest.class);
-
-  @Before
-  public void init() {
-    Model model = new ModelImpl();
-    createUserHandler = new CreateUserHandler(model);
-  }
+  private Logger logger = LoggerFactory.getLogger(CreateUserTest.class);
 
   @Test
   public void userExists() {
+    Model model = new ModelImpl();
+
     User user = new User("John", "Smith");
-    Answer answer = createUserHandler.process(user, Collections.emptyMap());
-    logger.info("New user: " + answer);
-    assertEquals(201, answer.getCode());
+    String userJson = "{\"firstName\":\"John\",\"lastName\":\"Smith\"}";
+    ResponseMessage responseMessage = model.createUser(userJson);
+    logger.info("New user: {}", responseMessage.getJsonMessage());
+    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
   }
 }

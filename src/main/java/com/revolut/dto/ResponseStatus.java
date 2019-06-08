@@ -9,11 +9,16 @@ public enum ResponseStatus {
   /**
    * Success status.
    */
-  OK(200, "Success"),
+  SUCCESS(201, "Success"),
   /**
    * Invalid request.
    */
-  BAD_REQUEST(400, "Invalid request value");
+  BAD_REQUEST(400, "Invalid request value"),
+  /**
+   * New client cannot be created.
+   */
+  USER_CREATE_ERROR(530, "New client cannot be created");
+
   /**
    * Int Code.
    */
