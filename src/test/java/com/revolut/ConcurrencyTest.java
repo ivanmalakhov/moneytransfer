@@ -58,7 +58,7 @@ public class ConcurrencyTest {
     for (int i = 0; i < ConcurrencyTest.N_ACCOUNTS; i++) {
       depositMoney(model.createAccount(Currency.EUR, user), amount);
     }
-    accounts.addAll(model.getAccountListByUser(user.getId()));
+    accounts.addAll(model.getAccountsByUser(user.getId()));
   }
 
   private void depositMoney(Account account, BigDecimal amount) {
@@ -117,7 +117,7 @@ public class ConcurrencyTest {
   @After
   public void after() {
     logger.info("Итоговый баланс:" + getTotalBalanceHandler.process(user, Collections.emptyMap()).getBody());
-    Set<Account> accounts = model.getAccountListByUser(user.getId());
+    Set<Account> accounts = model.getAccountsByUser(user.getId());
     BigDecimal sum = BigDecimal.ZERO;
     for (Account account : accounts) {
       sum = sum.add(account.getBalance());

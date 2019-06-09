@@ -8,6 +8,10 @@ import lombok.Data;
 @Data
 public class UserDTO {
   /**
+   * User id.
+   */
+  private Integer id;
+  /**
    * User FirstName.
    */
   private String firstName;

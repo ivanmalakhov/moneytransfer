@@ -1,7 +1,6 @@
 package com.revolut;
 
 import com.revolut.dto.ResponseMessage;
-import com.revolut.handler.account.GetAccountByUserHandler;
 import com.revolut.handler.account.GetTotalBalanceHandler;
 import com.revolut.handler.payment.DepositMoneyHandler;
 import com.revolut.handler.payment.TransferMoneyHandler;
@@ -49,7 +48,6 @@ class Server {
         response.status(message.getStatus().getCode());
         return message.getJsonMessage();
       });
-      get("/getall", new GetAccountByUserHandler(model));
       get("/totalbalance", new GetTotalBalanceHandler(model));
     });
     path("/payment", () -> {
@@ -61,6 +59,12 @@ class Server {
       post("/create", (request, response) -> {
         response.type(JSON_TYPE);
         ResponseMessage message = model.createUser(request.body());
+        response.status(message.getStatus().getCode());
+        return message.getJsonMessage();
+      });
+      get("/accounts", (request, response) -> {
+        response.type(JSON_TYPE);
+        ResponseMessage message = model.getAccountsByUser(request.body());
         response.status(message.getStatus().getCode());
         return message.getJsonMessage();
       });

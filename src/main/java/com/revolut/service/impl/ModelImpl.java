@@ -2,8 +2,8 @@ package com.revolut.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.revolut.data.User;
 import com.revolut.data.Account;
+import com.revolut.data.User;
 import com.revolut.dto.AccountDTO;
 import com.revolut.dto.Currency;
 import com.revolut.dto.Payment;
@@ -63,6 +63,11 @@ public final class ModelImpl implements Model {
    */
   private static final String
           USER_NOT_FOUND = "User not found";
+  /**
+   * Constant "JSON parsing error".
+   */
+  private static final String JSON_PARSING_ERROR =
+          "JSON parsing error. Input string: {} ;";
 
   /**
    * Service for working with Payments.
@@ -114,7 +119,7 @@ public final class ModelImpl implements Model {
       JsonObject jsonObject = gson.fromJson(data, JsonObject.class);
       accountDTO = gson.fromJson(jsonObject, AccountDTO.class);
     } catch (Exception e) {
-      logger.error("JSON parsing error. Input string: {} ;", data, e);
+      logger.error(JSON_PARSING_ERROR, data, e);
       responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
       return responseMessage;
     }
@@ -142,7 +147,7 @@ public final class ModelImpl implements Model {
   }
 
   @Override
-  public synchronized Set<Account> getAccountListByUser(final Integer userId) {
+  public synchronized Set<Account> getAccountsByUser(final Integer userId) {
     if (userService.userNotExist(userId)) {
       logger.error(USER_NOT_FOUND);
       throw new IllegalArgumentException(USER_NOT_FOUND);
@@ -155,6 +160,48 @@ public final class ModelImpl implements Model {
 
     }
     return accounts;
+  }
+
+  @Override
+  public ResponseMessage getAccountsByUser(final String data) {
+    Gson gson = new Gson();
+    logger.info("Create new account Request: {}", data);
+    ResponseMessage responseMessage = new ResponseMessage();
+    if (data.isEmpty()) {
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
+    }
+
+    UserDTO userDTO;
+    try {
+      JsonObject jsonObject = gson.fromJson(data, JsonObject.class);
+      userDTO = gson.fromJson(jsonObject, UserDTO.class);
+    } catch (Exception e) {
+      logger.error(JSON_PARSING_ERROR, data, e);
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
+    }
+
+    User user = userService.getUser(userDTO.getId());
+    if (user == null) {
+      logger.error("User with id={} doesn't exist", userDTO.getId());
+      responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
+      return responseMessage;
+    }
+    Set<Account> accounts = accountService.getAccountListByUser(user.getId());
+    if (accounts == null) {
+      logger.warn("User does not have accounts.");
+      responseMessage.setStatus(ResponseStatus.ACCOUNT_DOES_NOT_EXIST);
+      return responseMessage;
+    }
+    responseMessage.setStatus(ResponseStatus.SUCCESS);
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("Accounts", gson.toJsonTree(accounts));
+    responseMessage.setJsonMessage(jsonObject);
+    logger.info("Create new account. Response: {}",
+                responseMessage.getJsonMessage());
+    return responseMessage;
+
   }
 
   @Override
@@ -268,7 +315,7 @@ public final class ModelImpl implements Model {
       JsonObject jsonObject = gson.fromJson(data, JsonObject.class);
       userDTO = gson.fromJson(jsonObject, UserDTO.class);
     } catch (Exception e) {
-      logger.error("JSON parsing error. Input string: {} ;", data, e);
+      logger.error(JSON_PARSING_ERROR, data, e);
       responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
       return responseMessage;
     }

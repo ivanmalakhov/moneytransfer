@@ -23,9 +23,13 @@ public enum ResponseStatus {
    */
   ACCOUNT_CREATE_ERROR(531, "New user cannot be created"),
   /**
-   * User doesn't exist
+   * User doesn't exist.
    */
-  USER_DOES_NOT_EXIST(532, "User does not exist");
+  USER_DOES_NOT_EXIST(532, "User does not exist"),
+  /**
+   * User does not have accounts.
+   */
+  ACCOUNT_DOES_NOT_EXIST(533, "User does not have accounts");
 
   /**
    * Int Code.

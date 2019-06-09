@@ -1,11 +1,11 @@
 package com.revolut.service;
 
-import com.revolut.dto.PaymentRequest;
 import com.revolut.data.Account;
+import com.revolut.data.User;
 import com.revolut.dto.Currency;
 import com.revolut.dto.Payment;
+import com.revolut.dto.PaymentRequest;
 import com.revolut.dto.ResponseMessage;
-import com.revolut.data.User;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -44,7 +44,15 @@ public interface Model {
    * @param userId userId
    * @return Set<Account>
    */
-  Set<Account> getAccountListByUser(Integer userId);
+  Set<Account> getAccountsByUser(Integer userId);
+
+  /**
+   * Get All user Account.
+   *
+   * @param data - Json request
+   * @return ResponseMessage
+   */
+  ResponseMessage getAccountsByUser(String data);
 
   /**
    * Transfer money from one account to another.
