@@ -71,6 +71,56 @@ public class AccountTest {
   }
 
   @Test
+  public void getAccount() {
+    AccountDTO accountDTO = new AccountDTO();
+    accountDTO.setCurrency(Currency.EUR);
+    accountDTO.setUserId(user.getId());
+
+    ResponseMessage responseMessage;
+    responseMessage = model.createAccount(gson.toJson(accountDTO));
+    logger.info("New account: {}", responseMessage.getJsonMessage());
+    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
+
+    JsonObject jsonObject = gson.fromJson(responseMessage.getJsonMessage(),
+                                          JsonObject.class)
+            .getAsJsonObject("Info").getAsJsonObject("Account");
+    Account account = gson.fromJson(jsonObject, Account.class);
+
+    AccountDTO getAccountDto = new AccountDTO();
+    getAccountDto.setNumber(account.getNumber());
+    getAccountDto.setUserId(user.getId());
+    responseMessage = model.getAccount(gson.toJson(getAccountDto));
+    logger.info("Account: {}", responseMessage.getJsonMessage());
+    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
+
+  }
+
+  @Test
+  public void getAccountFail() {
+    AccountDTO accountDTO = new AccountDTO();
+    accountDTO.setCurrency(Currency.EUR);
+    accountDTO.setUserId(user.getId());
+
+    ResponseMessage responseMessage;
+    responseMessage = model.createAccount(gson.toJson(accountDTO));
+    logger.info("New account: {}", responseMessage.getJsonMessage());
+    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
+
+    JsonObject jsonObject = gson.fromJson(responseMessage.getJsonMessage(),
+                                          JsonObject.class)
+            .getAsJsonObject("Info").getAsJsonObject("Account");
+    Account account = gson.fromJson(jsonObject, Account.class);
+
+    AccountDTO getAccountDto = new AccountDTO();
+    getAccountDto.setNumber("qqe");
+    getAccountDto.setUserId(user.getId());
+    responseMessage = model.getAccount(gson.toJson(getAccountDto));
+    logger.info("Account: {}", responseMessage.getJsonMessage());
+    assertEquals(ResponseStatus.ACCOUNT_DOES_NOT_EXIST, responseMessage.getStatus());
+
+  }
+
+  @Test
   public void getAllAccountTest() {
     AccountDTO accountDTO = new AccountDTO();
     accountDTO.setCurrency(Currency.EUR);

@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.utils.StringUtils;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 /**
@@ -68,6 +67,11 @@ public final class ModelImpl implements Model {
    */
   private static final String JSON_PARSING_ERROR =
           "JSON parsing error. Input string: {} ;";
+  /**
+   * Constant "User doesn't exist".
+   */
+  private static final String USER_DOESN_T_EXIST =
+          "User with id={} doesn't exist";
 
   /**
    * Service for working with Payments.
@@ -125,11 +129,11 @@ public final class ModelImpl implements Model {
     }
     User user = userService.getUser(accountDTO.getUserId());
     if (user == null) {
-      logger.error("User with id={} doesn't exist", accountDTO.getUserId());
+      logger.error(USER_DOESN_T_EXIST, accountDTO.getUserId());
       responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
       return responseMessage;
-
     }
+
     Account account = accountService.create(accountDTO.getCurrency(), user);
     if (account == null) {
       logger.warn("Error creating new account.");
@@ -165,7 +169,7 @@ public final class ModelImpl implements Model {
   @Override
   public ResponseMessage getAccountsByUser(final String data) {
     Gson gson = new Gson();
-    logger.info("Create new account Request: {}", data);
+    logger.info("Get user accounts Request: {}", data);
     ResponseMessage responseMessage = new ResponseMessage();
     if (data.isEmpty()) {
       responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
@@ -184,7 +188,7 @@ public final class ModelImpl implements Model {
 
     User user = userService.getUser(userDTO.getId());
     if (user == null) {
-      logger.error("User with id={} doesn't exist", userDTO.getId());
+      logger.error(USER_DOESN_T_EXIST, userDTO.getId());
       responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
       return responseMessage;
     }
@@ -336,7 +340,46 @@ public final class ModelImpl implements Model {
   }
 
   @Override
-  public synchronized BigDecimal getTotalBalanceByUser(final Integer userId) {
-    return accountService.getTotalBalanceByUser(userId);
+  public ResponseMessage getAccount(final String data) {
+    Gson gson = new Gson();
+    logger.info("Get account balance. Request: {}", data);
+    ResponseMessage responseMessage = new ResponseMessage();
+    if (data.isEmpty()) {
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
+    }
+
+    AccountDTO accountDTO;
+    try {
+      JsonObject jsonObject = gson.fromJson(data, JsonObject.class);
+      accountDTO = gson.fromJson(jsonObject, AccountDTO.class);
+    } catch (Exception e) {
+      logger.error(JSON_PARSING_ERROR, data, e);
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
+    }
+
+    User user = userService.getUser(accountDTO.getUserId());
+    if (user == null) {
+      logger.error(USER_DOESN_T_EXIST, accountDTO.getUserId());
+      responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
+      return responseMessage;
+    }
+
+    Account account = accountService.getAccountById(user.getId(),
+                                                    accountDTO.getNumber());
+    if (account == null) {
+      logger.warn("Account with number {} does not exist.",
+                  accountDTO.getNumber());
+      responseMessage.setStatus(ResponseStatus.ACCOUNT_DOES_NOT_EXIST);
+      return responseMessage;
+    }
+    responseMessage.setStatus(ResponseStatus.SUCCESS);
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("Account", gson.toJsonTree(account, Account.class));
+    responseMessage.setJsonMessage(jsonObject);
+    logger.info("Account information. Response: {}",
+                responseMessage.getJsonMessage());
+    return responseMessage;
   }
 }

@@ -1,7 +1,6 @@
 package com.revolut;
 
 import com.revolut.dto.ResponseMessage;
-import com.revolut.handler.account.GetTotalBalanceHandler;
 import com.revolut.handler.payment.DepositMoneyHandler;
 import com.revolut.handler.payment.TransferMoneyHandler;
 import com.revolut.handler.payment.WithdrawMoneyHandler;
@@ -38,8 +37,8 @@ class Server {
     Model model = new ModelImpl();
     before("/*", (q, a) ->
             logger.info("Received api call"
-                    + q.headers()
-                    + "  ;  " + q.toString()));
+                                + q.headers()
+                                + "  ;  " + q.toString()));
 
     path("/account", () -> {
       post("/create", (request, response) -> {
@@ -48,7 +47,12 @@ class Server {
         response.status(message.getStatus().getCode());
         return message.getJsonMessage();
       });
-      get("/totalbalance", new GetTotalBalanceHandler(model));
+      get("/get", (request, response) -> {
+        response.type(JSON_TYPE);
+        ResponseMessage message = model.getAccount(request.body());
+        response.status(message.getStatus().getCode());
+        return message.getJsonMessage();
+      });
     });
     path("/payment", () -> {
       post("/transfer", new TransferMoneyHandler(model));

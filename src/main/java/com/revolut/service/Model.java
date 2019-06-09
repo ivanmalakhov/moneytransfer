@@ -7,7 +7,6 @@ import com.revolut.dto.Payment;
 import com.revolut.dto.PaymentRequest;
 import com.revolut.dto.ResponseMessage;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 /**
@@ -22,6 +21,7 @@ public interface Model {
    * @return Account
    */
   Account createAccount(Currency currency, User user);
+
   /**
    * Create new account.
    *
@@ -79,10 +79,10 @@ public interface Model {
   Payment deposit(PaymentRequest paymentRequest);
 
   /**
-   * Get total balance for all user account.
+   * Get information about account.
    *
-   * @param userId user id
-   * @return total balance
+   * @param data - Json request
+   * @return ResponseMessage account information
    */
-  BigDecimal getTotalBalanceByUser(Integer userId);
+  ResponseMessage getAccount(String data);
 }

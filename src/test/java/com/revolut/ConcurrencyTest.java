@@ -5,8 +5,6 @@ import com.revolut.data.Account;
 import com.revolut.data.User;
 import com.revolut.dto.Currency;
 import com.revolut.dto.PaymentRequest;
-import com.revolut.handler.Answer;
-import com.revolut.handler.account.GetTotalBalanceHandler;
 import com.revolut.handler.payment.DepositMoneyHandler;
 import com.revolut.handler.payment.TransferMoneyHandler;
 import com.revolut.service.Model;
@@ -14,7 +12,6 @@ import com.revolut.service.impl.ModelImpl;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -24,15 +21,12 @@ import java.util.Set;
 
 import static com.revolut.TestJson.USER_JSON;
 import static com.revolut.TestUtils.createUser;
-import static java.lang.Thread.sleep;
-import static org.junit.Assert.assertEquals;
 
 public class ConcurrencyTest {
   private Model model;
   private Logger logger = Logger.getLogger(ConcurrencyTest.class);
   private TransferMoneyHandler transferMoneyHandler;
   private DepositMoneyHandler depositMoneyHandler;
-  private GetTotalBalanceHandler getTotalBalanceHandler;
   private User user;
   private static final int N_ACCOUNTS = 1000;
   private static final BigDecimal INITIAL_BALANCE = BigDecimal.valueOf(10000);
@@ -46,7 +40,6 @@ public class ConcurrencyTest {
     model = new ModelImpl();
     transferMoneyHandler = new TransferMoneyHandler(model);
     depositMoneyHandler = new DepositMoneyHandler(model);
-    getTotalBalanceHandler = new GetTotalBalanceHandler(model);
     user = createUser(model, USER_JSON);
     logger.info("New User: " + user);
 
@@ -69,6 +62,7 @@ public class ConcurrencyTest {
     depositMoneyHandler.process(paymentRequest, Collections.emptyMap());
   }
 
+/*
   @Test
   public void raceConditionTest() {
     createAccountAndDepositMoney(INITIAL_BALANCE);
@@ -113,10 +107,10 @@ public class ConcurrencyTest {
       throw exc[0];
     }
   }
+*/
 
   @After
   public void after() {
-    logger.info("Итоговый баланс:" + getTotalBalanceHandler.process(user, Collections.emptyMap()).getBody());
     Set<Account> accounts = model.getAccountsByUser(user.getId());
     BigDecimal sum = BigDecimal.ZERO;
     for (Account account : accounts) {

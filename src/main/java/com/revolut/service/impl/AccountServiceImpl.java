@@ -1,8 +1,8 @@
 package com.revolut.service.impl;
 
 import com.revolut.data.Account;
-import com.revolut.dto.Currency;
 import com.revolut.data.User;
+import com.revolut.dto.Currency;
 import com.revolut.service.AccountService;
 import org.apache.log4j.Logger;
 
@@ -25,7 +25,7 @@ public enum AccountServiceImpl implements AccountService {
     userAccounts = new HashMap<>();
   }
 
-  public Account create(Currency currency, User user) {
+  public Account create(final Currency currency, final User user) {
     Account account = new Account(UUID.randomUUID(),
             "40702" + currency.code() + rand.nextInt(Integer.MAX_VALUE),
             BigDecimal.ZERO,
@@ -40,12 +40,13 @@ public enum AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public Set<Account> getAccountListByUser(Integer userId) {
+  public Set<Account> getAccountListByUser(final Integer userId) {
     return userAccounts.get(userId);
   }
 
   @Override
-  public Account getAccountById(Integer userId, String accountNumber) {
+  public Account getAccountById(final Integer userId,
+                                final String accountNumber) {
     final Account[] account = {null};
     userAccounts.get(userId)
             .stream()
@@ -56,7 +57,7 @@ public enum AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public BigDecimal getTotalBalanceByUser(Integer userId) {
+  public BigDecimal getTotalBalanceByUser(final Integer userId) {
     return userAccounts.get(userId)
             .stream()
             .map(Account::getBalance)
