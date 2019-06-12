@@ -1,9 +1,6 @@
 package com.revolut;
 
 import com.revolut.dto.ResponseMessage;
-import com.revolut.handler.payment.DepositMoneyHandler;
-import com.revolut.handler.payment.TransferMoneyHandler;
-import com.revolut.handler.payment.WithdrawMoneyHandler;
 import com.revolut.service.Model;
 import com.revolut.service.impl.ModelImpl;
 import org.slf4j.Logger;
@@ -55,9 +52,24 @@ class Server {
       });
     });
     path("/payment", () -> {
-      post("/transfer", new TransferMoneyHandler(model));
-      post("/deposit", new DepositMoneyHandler(model));
-      post("/withdraw", new WithdrawMoneyHandler(model));
+      post("/transfer", (request, response) -> {
+        response.type(JSON_TYPE);
+        ResponseMessage message = model.transferMoney(request.body());
+        response.status(message.getStatus().getCode());
+        return message.getJsonMessage();
+      });
+      post("/deposit", (request, response) -> {
+        response.type(JSON_TYPE);
+        ResponseMessage message = model.deposit(request.body());
+        response.status(message.getStatus().getCode());
+        return message.getJsonMessage();
+      });
+      post("/withdraw", (request, response) -> {
+        response.type(JSON_TYPE);
+        ResponseMessage message = model.withdraw(request.body());
+        response.status(message.getStatus().getCode());
+        return message.getJsonMessage();
+      });
     });
     path("/user", () -> {
       post("/create", (request, response) -> {

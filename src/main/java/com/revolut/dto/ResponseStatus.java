@@ -29,7 +29,31 @@ public enum ResponseStatus {
   /**
    * User does not have accounts.
    */
-  ACCOUNT_DOES_NOT_EXIST(533, "User does not have accounts");
+  ACCOUNT_DOES_NOT_EXIST(533, "User does not have accounts"),
+  /**
+   * Empty destination account ID.
+   */
+  EMPTY_DEST_ACC_ID(534, "Empty destination account ID"),
+  /**
+   * Empty source account ID.
+   */
+  EMPTY_SRC_ACC_ID(535, "Empty source account ID"),
+  /**
+   * Empty user ID.
+   */
+  EMPTY_USER_ID(536, "Empty user ID"),
+  /**
+   * Destination account doesn't exists.
+   */
+  DEST_ACC_DOES_NOT_EXISTS(537, "Destination account doesn't exists"),
+  /**
+   * Source account doesn't exists.
+   */
+  SRC_ACC_DOES_NOT_EXISTS(538, "Source account doesn't exists"),
+  /**
+   * Not enough money for a transaction.
+   */
+  NOT_ENOUGH_MONEY_FOR_A_TRANSACTION(539, "Not enough money for a transaction");
 
   /**
    * Int Code.

@@ -3,8 +3,6 @@ package com.revolut.service;
 import com.revolut.data.Account;
 import com.revolut.data.User;
 import com.revolut.dto.Currency;
-import com.revolut.dto.Payment;
-import com.revolut.dto.PaymentRequest;
 import com.revolut.dto.ResponseMessage;
 
 import java.util.Set;
@@ -57,26 +55,26 @@ public interface Model {
   /**
    * Transfer money from one account to another.
    *
-   * @param paymentRequest paymentRequest
-   * @return Payment
+   * @param data json request
+   * @return ResponseMessage
    */
-  Payment transferMoney(PaymentRequest paymentRequest);
+  ResponseMessage transferMoney(String data);
 
   /**
    * Withdraw money from account.
    *
-   * @param paymentRequest paymentRequest
-   * @return Payment
+   * @param data json request
+   * @return ResponseMessage
    */
-  Payment withdraw(PaymentRequest paymentRequest);
+  ResponseMessage withdraw(String data);
 
   /**
    * Deposit money to account.
    *
-   * @param paymentRequest paymentRequest
-   * @return Payment
+   * @param data - json request
+   * @return ResponseMessage
    */
-  Payment deposit(PaymentRequest paymentRequest);
+  ResponseMessage deposit(String data);
 
   /**
    * Get information about account.

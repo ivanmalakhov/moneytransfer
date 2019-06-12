@@ -4,11 +4,9 @@ import com.google.gson.Gson;
 import com.revolut.data.Account;
 import com.revolut.data.User;
 import com.revolut.dto.Currency;
-import com.revolut.dto.PaymentRequest;
-import com.revolut.handler.Answer;
-import com.revolut.handler.payment.DepositMoneyHandler;
-import com.revolut.handler.payment.TransferMoneyHandler;
-import com.revolut.handler.payment.WithdrawMoneyHandler;
+import com.revolut.dto.PaymentDTO;
+import com.revolut.dto.ResponseMessage;
+import com.revolut.dto.ResponseStatus;
 import com.revolut.service.Model;
 import com.revolut.service.impl.ModelImpl;
 import org.apache.log4j.Logger;
@@ -16,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 
 import static com.revolut.TestJson.USER_JSON;
 import static com.revolut.TestUtils.createUser;
@@ -24,22 +21,16 @@ import static org.junit.Assert.assertEquals;
 
 public class TransferMoneyTest {
   private Logger logger = Logger.getLogger(TransferMoneyTest.class);
-  private TransferMoneyHandler transferMoneyHandler;
-  private DepositMoneyHandler depositMoneyHandler;
-  private WithdrawMoneyHandler withdrawMoneyHandler;
 
   private User user;
   private Account account1, account2;
   private static final int DELAY = 10;
-  Model model;
-  Gson gson = new Gson();
+  private Model model;
+  private Gson gson = new Gson();
 
   @Before
   public void init() {
     model = new ModelImpl();
-    transferMoneyHandler = new TransferMoneyHandler(model);
-    depositMoneyHandler = new DepositMoneyHandler(model);
-    withdrawMoneyHandler = new WithdrawMoneyHandler(model);
     user = createUser(model, USER_JSON);
     logger.info("New User: " + user);
     account1 = model.createAccount(Currency.EUR, user);
@@ -50,126 +41,120 @@ public class TransferMoneyTest {
 
   // deposit money
   private void depositMoney(BigDecimal amount) {
-    PaymentRequest paymentRequest = new PaymentRequest();
-    paymentRequest.setUserId(user.getId());
-    paymentRequest.setAmount(amount);
-    paymentRequest.setDstAccount(account1.getNumber());
-    Answer answer = depositMoneyHandler.process(paymentRequest, Collections.emptyMap());
-    logger.info("Deposit money payment: " + answer.getBody());
-  }
+    PaymentDTO paymentDTO = new PaymentDTO();
+    paymentDTO.setUserId(user.getId());
+    paymentDTO.setAmount(amount);
+    paymentDTO.setDstAccount(account1.getNumber());
 
-  // deposit money
-  public void withdrawMoney(BigDecimal amount) {
-    PaymentRequest paymentRequest = new PaymentRequest();
-    paymentRequest.setUserId(user.getId());
-    paymentRequest.setAmount(amount);
-    paymentRequest.setSrcAccount(account2.getNumber());
-    Answer answer = withdrawMoneyHandler.process(paymentRequest, Collections.emptyMap());
-    logger.info("Deposit money payment: " + answer.getBody());
+    ResponseMessage responseMessage = model.deposit(gson.toJson(paymentDTO));
+    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
   }
 
   @Test
   public void transferMoneyEmptyUser() {
-    PaymentRequest paymentRequest = new PaymentRequest();
-    paymentRequest.setAmount(BigDecimal.ONE);
-    paymentRequest.setSrcAccount(account1.getNumber());
-    paymentRequest.setDstAccount(account2.getNumber());
-    Answer answer = transferMoneyHandler.process(paymentRequest, Collections.emptyMap());
-    assertEquals(404, answer.getCode());
-    assertEquals("Empty user ID", answer.getBody());
+    PaymentDTO paymentDTO = new PaymentDTO();
+    paymentDTO.setAmount(BigDecimal.ONE);
+    paymentDTO.setSrcAccount(account1.getNumber());
+    paymentDTO.setDstAccount(account2.getNumber());
+
+    ResponseMessage responseMessage = model.transferMoney(gson.toJson(paymentDTO));
+    assertEquals(ResponseStatus.EMPTY_USER_ID, responseMessage.getStatus());
   }
 
   @Test
   public void transferMoneyFakeUser() {
-    PaymentRequest paymentRequest = new PaymentRequest();
-    paymentRequest.setUserId(987);
-    paymentRequest.setAmount(BigDecimal.ONE);
-    paymentRequest.setSrcAccount(account1.getNumber());
-    paymentRequest.setDstAccount(account2.getNumber());
-    Answer answer = transferMoneyHandler.process(paymentRequest, Collections.emptyMap());
-    assertEquals(404, answer.getCode());
-    assertEquals("User not found", answer.getBody());
+    PaymentDTO paymentDTO = new PaymentDTO();
+    paymentDTO.setUserId(987);
+    paymentDTO.setAmount(BigDecimal.ONE);
+    paymentDTO.setSrcAccount(account1.getNumber());
+    paymentDTO.setDstAccount(account2.getNumber());
 
+    ResponseMessage responseMessage = model.transferMoney(gson.toJson(paymentDTO));
+    assertEquals(ResponseStatus.USER_DOES_NOT_EXIST, responseMessage.getStatus());
   }
 
   @Test
   public void transferMoneyEmptyAccountSrc() {
-    PaymentRequest paymentRequest = new PaymentRequest();
-    paymentRequest.setUserId(user.getId());
-    paymentRequest.setDstAccount(account2.getNumber());
-    paymentRequest.setAmount(BigDecimal.ONE);
-    Answer answer = transferMoneyHandler.process(paymentRequest, Collections.emptyMap());
-    assertEquals(404, answer.getCode());
-    assertEquals("Empty source account ID", answer.getBody());
+    PaymentDTO paymentDTO = new PaymentDTO();
+    paymentDTO.setUserId(user.getId());
+    paymentDTO.setDstAccount(account2.getNumber());
+    paymentDTO.setAmount(BigDecimal.ONE);
+
+    ResponseMessage responseMessage = model.transferMoney(gson.toJson(paymentDTO));
+    assertEquals(ResponseStatus.EMPTY_SRC_ACC_ID, responseMessage.getStatus());
   }
 
   @Test
   public void transferMoneyEmptyAccountDst() {
-    PaymentRequest paymentRequest = new PaymentRequest();
-    paymentRequest.setUserId(user.getId());
-    paymentRequest.setSrcAccount(account1.getNumber());
-    paymentRequest.setAmount(BigDecimal.ONE);
-    Answer answer = transferMoneyHandler.process(paymentRequest, Collections.emptyMap());
-    assertEquals(404, answer.getCode());
-    assertEquals("Empty destination account ID", answer.getBody());
+    PaymentDTO paymentDTO = new PaymentDTO();
+    paymentDTO.setUserId(user.getId());
+    paymentDTO.setSrcAccount(account1.getNumber());
+    paymentDTO.setAmount(BigDecimal.ONE);
+
+    ResponseMessage responseMessage = model.transferMoney(gson.toJson(paymentDTO));
+    assertEquals(ResponseStatus.EMPTY_DEST_ACC_ID, responseMessage.getStatus());
   }
 
   @Test
   public void transferMoneyFakeAccountSrc() {
-    PaymentRequest paymentRequest = new PaymentRequest();
-    paymentRequest.setUserId(user.getId());
-    paymentRequest.setAmount(BigDecimal.ONE);
-    paymentRequest.setSrcAccount("FakeAccount");
-    paymentRequest.setDstAccount(account2.getNumber());
-    Answer answer = transferMoneyHandler.process(paymentRequest, Collections.emptyMap());
-    assertEquals(404, answer.getCode());
-    assertEquals("Source account doesn't exists", answer.getBody());
+    PaymentDTO paymentDTO = new PaymentDTO();
+    paymentDTO.setUserId(user.getId());
+    paymentDTO.setAmount(BigDecimal.ONE);
+    paymentDTO.setSrcAccount("FakeAccount");
+    paymentDTO.setDstAccount(account2.getNumber());
+
+    ResponseMessage responseMessage = model.transferMoney(gson.toJson(paymentDTO));
+    assertEquals(ResponseStatus.SRC_ACC_DOES_NOT_EXISTS, responseMessage.getStatus());
   }
 
   @Test
   public void transferMoneyFakeAccountDst() {
-    PaymentRequest paymentRequest = new PaymentRequest();
-    paymentRequest.setUserId(user.getId());
-    paymentRequest.setAmount(BigDecimal.ONE);
-    paymentRequest.setSrcAccount(account1.getNumber());
-    paymentRequest.setDstAccount("FakeAccount");
-    Answer answer = transferMoneyHandler.process(paymentRequest, Collections.emptyMap());
-    assertEquals(404, answer.getCode());
-    assertEquals("Destination account doesn't exists", answer.getBody());
+    PaymentDTO paymentDTO = new PaymentDTO();
+    paymentDTO.setUserId(user.getId());
+    paymentDTO.setAmount(BigDecimal.ONE);
+    paymentDTO.setSrcAccount(account1.getNumber());
+    paymentDTO.setDstAccount("FakeAccount");
+
+    ResponseMessage responseMessage = model.transferMoney(gson.toJson(paymentDTO));
+    assertEquals(ResponseStatus.DEST_ACC_DOES_NOT_EXISTS, responseMessage.getStatus());
   }
 
   @Test
   public void transferMoneyNotEnoughMoney() {
-    PaymentRequest paymentRequest = new PaymentRequest();
-    paymentRequest.setUserId(user.getId());
-    paymentRequest.setSrcAccount(account1.getNumber());
-    paymentRequest.setDstAccount(account2.getNumber());
-    paymentRequest.setAmount(BigDecimal.ONE);
-    Answer answer = transferMoneyHandler.process(paymentRequest, Collections.emptyMap());
-    assertEquals(404, answer.getCode());
-    assertEquals("Not enough money for a transaction", answer.getBody());
+    PaymentDTO paymentDTO = new PaymentDTO();
+    paymentDTO.setUserId(user.getId());
+    paymentDTO.setSrcAccount(account1.getNumber());
+    paymentDTO.setDstAccount(account2.getNumber());
+    paymentDTO.setAmount(BigDecimal.ONE);
+
+    ResponseMessage responseMessage = model.transferMoney(gson.toJson(paymentDTO));
+    assertEquals(ResponseStatus.NOT_ENOUGH_MONEY_FOR_A_TRANSACTION,
+                 responseMessage.getStatus());
   }
 
   @Test
   public void transferMoneyOK() {
     BigDecimal amount = BigDecimal.ONE;
     depositMoney(amount);
-    PaymentRequest paymentRequest = new PaymentRequest();
-    paymentRequest.setUserId(user.getId());
-    paymentRequest.setSrcAccount(account1.getNumber());
-    paymentRequest.setDstAccount(account2.getNumber());
-    paymentRequest.setAmount(BigDecimal.ONE);
-    Answer answer = transferMoneyHandler.process(paymentRequest, Collections.emptyMap());
-    logger.info("TransferMoney: " + answer);
-    assertEquals(201, answer.getCode());
+    PaymentDTO paymentDTO = new PaymentDTO();
+    paymentDTO.setUserId(user.getId());
+    paymentDTO.setSrcAccount(account1.getNumber());
+    paymentDTO.setDstAccount(account2.getNumber());
+    paymentDTO.setAmount(BigDecimal.ONE);
 
-    PaymentRequest withdrawRequest = new PaymentRequest();
+    ResponseMessage responseMessage;
+    responseMessage = model.transferMoney(gson.toJson(paymentDTO));
+    logger.info("TransferMoney: " + responseMessage.getJsonMessage());
+    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
+
+    PaymentDTO withdrawRequest = new PaymentDTO();
     withdrawRequest.setUserId(user.getId());
     withdrawRequest.setAmount(amount);
     withdrawRequest.setSrcAccount(account2.getNumber());
-    Answer withdrawAnswer = withdrawMoneyHandler.process(withdrawRequest, Collections.emptyMap());
-    logger.info("WithdrawPayment: " + withdrawAnswer);
-    assertEquals(201, withdrawAnswer.getCode());
+
+    responseMessage = model.withdraw(gson.toJson(paymentDTO));
+    logger.info("WithdrawPayment: " + responseMessage.getJsonMessage());
+    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
   }
 
 /*  @Test
@@ -178,7 +163,7 @@ public class TransferMoneyTest {
     BigDecimal amount = BigDecimal.valueOf(balance);
     depositMoney(amount);
 
-    PaymentRequest paymentRequest = new PaymentRequest();
+    PaymentDTO paymentRequest = new PaymentDTO();
     paymentRequest.setUserId(user.getId());
     paymentRequest.setSrcAccount(account1.getNumber());
     paymentRequest.setDstAccount(account2.getNumber());
@@ -216,7 +201,7 @@ public class TransferMoneyTest {
     }
     assertEquals(amount, sum);
 
-    PaymentRequest withdrawRequest = new PaymentRequest();
+    PaymentDTO withdrawRequest = new PaymentDTO();
     withdrawRequest.setUserId(user.getId());
     withdrawRequest.setAmount(amount);
     withdrawRequest.setSrcAccount(account2.getNumber());
