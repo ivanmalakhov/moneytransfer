@@ -2,12 +2,12 @@ package com.revolut.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.revolut.data.User;
 import com.revolut.data.Account;
+import com.revolut.data.Payment;
+import com.revolut.data.User;
 import com.revolut.dto.AccountDTO;
 import com.revolut.dto.Currency;
-import com.revolut.dto.Payment;
-import com.revolut.dto.PaymentRequest;
+import com.revolut.dto.PaymentDTO;
 import com.revolut.dto.ResponseMessage;
 import com.revolut.dto.ResponseStatus;
 import com.revolut.dto.UserDTO;
@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.utils.StringUtils;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 /**
@@ -27,42 +26,20 @@ import java.util.Set;
  */
 public final class ModelImpl implements Model {
   /**
-   * Constant "Empty destination account ID".
-   */
-  private static final String
-          EMPTY_DESTINATION_ACCOUNT_ID = "Empty destination account ID";
-  /**
-   * Constant "Empty source account ID".
-   */
-  private static final String
-          EMPTY_SOURCE_ACCOUNT_ID = "Empty source account ID";
-  /**
-   * Constant "Empty user ID".
-   */
-  private static final String
-          EMPTY_USER_ID = "Empty user ID";
-  /**
-   * Constant "Source account doesn't exists".
-   */
-  private static final String
-          SOURCE_ACCOUNT_DOES_NOT_EXISTS = "Source account doesn't exists";
-  /**
-   * Constant "Destination account doesn't exists".
-   */
-  private static final String
-          DESTINATION_ACCOUNT_DOES_NOT_EXISTS =
-          "Destination account doesn't exists";
-  /**
-   * Constant "Not enough money for a transaction".
-   */
-  private static final String
-          NOT_ENOUGH_MONEY_FOR_A_TRANSACTION =
-          "Not enough money for a transaction";
-  /**
    * Constant "User not found".
    */
   private static final String
           USER_NOT_FOUND = "User not found";
+  /**
+   * Constant "JSON parsing error".
+   */
+  private static final String JSON_PARSING_ERROR =
+          "JSON parsing error. Input string: {} ;";
+  /**
+   * Constant "User doesn't exist".
+   */
+  private static final String USER_DOES_NOT_EXIST =
+          "User with id={} doesn't exist";
 
   /**
    * Service for working with Payments.
@@ -93,7 +70,7 @@ public final class ModelImpl implements Model {
   @Override
   public synchronized Account createAccount(final Currency currency,
                                             final User user) {
-    if (userService.userNotExist(user)) {
+    if (userService.isUserNotExist(user)) {
       logger.error(USER_NOT_FOUND);
       throw new IllegalArgumentException(USER_NOT_FOUND);
     }
@@ -114,17 +91,17 @@ public final class ModelImpl implements Model {
       JsonObject jsonObject = gson.fromJson(data, JsonObject.class);
       accountDTO = gson.fromJson(jsonObject, AccountDTO.class);
     } catch (Exception e) {
-      logger.error("JSON parsing error. Input string: {} ;", data, e);
+      logger.error(JSON_PARSING_ERROR, data, e);
       responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
       return responseMessage;
     }
     User user = userService.getUser(accountDTO.getUserId());
     if (user == null) {
-      logger.error("User with id={} doesn't exist", accountDTO.getUserId());
+      logger.error(USER_DOES_NOT_EXIST, accountDTO.getUserId());
       responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
       return responseMessage;
-
     }
+
     Account account = accountService.create(accountDTO.getCurrency(), user);
     if (account == null) {
       logger.warn("Error creating new account.");
@@ -133,7 +110,8 @@ public final class ModelImpl implements Model {
     }
     responseMessage.setStatus(ResponseStatus.SUCCESS);
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Account", gson.toJsonTree(account, Account.class));
+    jsonObject.add(Account.class.getSimpleName(),
+                   gson.toJsonTree(account, Account.class));
     responseMessage.setJsonMessage(jsonObject);
     logger.info("Create new account. Response: {}",
                 responseMessage.getJsonMessage());
@@ -142,8 +120,8 @@ public final class ModelImpl implements Model {
   }
 
   @Override
-  public synchronized Set<Account> getAccountListByUser(final Integer userId) {
-    if (userService.userNotExist(userId)) {
+  public synchronized Set<Account> getAccountsByUser(final Integer userId) {
+    if (userService.isUserNotExist(userId)) {
       logger.error(USER_NOT_FOUND);
       throw new IllegalArgumentException(USER_NOT_FOUND);
     }
@@ -158,99 +136,241 @@ public final class ModelImpl implements Model {
   }
 
   @Override
-  public synchronized Payment transferMoney(
-          final PaymentRequest paymentRequest) {
-    if (StringUtils.isBlank(paymentRequest.getDstAccount())) {
-      logger.error(EMPTY_DESTINATION_ACCOUNT_ID);
-      throw new IllegalArgumentException(EMPTY_DESTINATION_ACCOUNT_ID);
-    }
-    if (StringUtils.isBlank(paymentRequest.getSrcAccount())) {
-      logger.error(EMPTY_SOURCE_ACCOUNT_ID);
-      throw new IllegalArgumentException(EMPTY_SOURCE_ACCOUNT_ID);
-    }
-    if (paymentRequest.getUserId() == null) {
-      logger.error(EMPTY_USER_ID);
-      throw new IllegalArgumentException(EMPTY_USER_ID);
-    }
-    if (userService.userNotExist(paymentRequest.getUserId())) {
-      logger.error(USER_NOT_FOUND);
-      throw new IllegalArgumentException(USER_NOT_FOUND);
-    }
-    Account srcAccount = accountService.getAccountById(
-            paymentRequest.getUserId(),
-            paymentRequest.getSrcAccount());
-    if (null == srcAccount) {
-      logger.error(SOURCE_ACCOUNT_DOES_NOT_EXISTS);
-      throw new IllegalArgumentException(SOURCE_ACCOUNT_DOES_NOT_EXISTS);
-    }
-    Account dstAccount = accountService.getAccountById(
-            paymentRequest.getUserId(),
-            paymentRequest.getDstAccount());
-    if (null == dstAccount) {
-      logger.error(DESTINATION_ACCOUNT_DOES_NOT_EXISTS);
-      throw new IllegalArgumentException(DESTINATION_ACCOUNT_DOES_NOT_EXISTS);
-    }
-    if (srcAccount.getBalance().compareTo(paymentRequest.getAmount()) < 0) {
-      logger.error(NOT_ENOUGH_MONEY_FOR_A_TRANSACTION);
-      throw new IllegalArgumentException(NOT_ENOUGH_MONEY_FOR_A_TRANSACTION);
+  public ResponseMessage getAccountsByUser(final String data) {
+    Gson gson = new Gson();
+    logger.info("Get user accounts Request: {}", data);
+    ResponseMessage responseMessage = new ResponseMessage();
+    if (data.isEmpty()) {
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
     }
 
-    return paymentService.transferMoney(srcAccount,
-                                        dstAccount,
-                                        paymentRequest.getAmount());
+    UserDTO userDTO;
+    try {
+      JsonObject jsonObject = gson.fromJson(data, JsonObject.class);
+      userDTO = gson.fromJson(jsonObject, UserDTO.class);
+    } catch (Exception e) {
+      logger.error(JSON_PARSING_ERROR, data, e);
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
+    }
+
+    User user = userService.getUser(userDTO.getId());
+    if (user == null) {
+      logger.error(USER_DOES_NOT_EXIST, userDTO.getId());
+      responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
+      return responseMessage;
+    }
+    Set<Account> accounts = accountService.getAccountListByUser(user.getId());
+    if (accounts == null) {
+      logger.warn("User does not have accounts.");
+      responseMessage.setStatus(ResponseStatus.ACCOUNT_DOES_NOT_EXIST);
+      return responseMessage;
+    }
+    responseMessage.setStatus(ResponseStatus.SUCCESS);
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add("Accounts", gson.toJsonTree(accounts));
+    responseMessage.setJsonMessage(jsonObject);
+    logger.info("Create new account. Response: {}",
+                responseMessage.getJsonMessage());
+    return responseMessage;
+
   }
 
   @Override
-  public synchronized Payment deposit(final PaymentRequest paymentRequest) {
-    if (StringUtils.isBlank(paymentRequest.getDstAccount())) {
-      logger.error(EMPTY_DESTINATION_ACCOUNT_ID);
-      throw new IllegalArgumentException(EMPTY_DESTINATION_ACCOUNT_ID);
+  public synchronized ResponseMessage transferMoney(final String data) {
+    Gson gson = new Gson();
+    logger.info("Transfer money. Request: {}", data);
+    ResponseMessage responseMessage = new ResponseMessage();
+    if (data.isEmpty()) {
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
     }
-    if (paymentRequest.getUserId() == null) {
-      logger.error(EMPTY_USER_ID);
-      throw new IllegalArgumentException(EMPTY_USER_ID);
+    PaymentDTO paymentDTO;
+    try {
+      JsonObject jsonObject = gson.fromJson(data, JsonObject.class);
+      paymentDTO = gson.fromJson(jsonObject, PaymentDTO.class);
+    } catch (Exception e) {
+      logger.error(JSON_PARSING_ERROR, data, e);
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
     }
-    if (userService.userNotExist(paymentRequest.getUserId())) {
-      logger.error(USER_NOT_FOUND);
-      throw new IllegalArgumentException(USER_NOT_FOUND);
+
+    if (StringUtils.isBlank(paymentDTO.getDstAccount())) {
+      logger.error(ResponseStatus.EMPTY_DEST_ACC_ID.getDescription());
+      responseMessage.setStatus(ResponseStatus.EMPTY_DEST_ACC_ID);
+      return responseMessage;
+    }
+
+    if (StringUtils.isBlank(paymentDTO.getSrcAccount())) {
+      logger.error(ResponseStatus.EMPTY_SRC_ACC_ID.getDescription());
+      responseMessage.setStatus(ResponseStatus.EMPTY_SRC_ACC_ID);
+      return responseMessage;
+    }
+
+    if (paymentDTO.getUserId() == null) {
+      logger.error(ResponseStatus.EMPTY_USER_ID.getDescription());
+      responseMessage.setStatus(ResponseStatus.EMPTY_USER_ID);
+      return responseMessage;
+    }
+    if (userService.isUserNotExist(paymentDTO.getUserId())) {
+      logger.error(ResponseStatus.USER_DOES_NOT_EXIST.getDescription());
+      responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
+      return responseMessage;
+    }
+    Account srcAccount = accountService.getAccountById(
+            paymentDTO.getUserId(),
+            paymentDTO.getSrcAccount());
+    if (null == srcAccount) {
+      logger.error(ResponseStatus.SRC_ACC_DOES_NOT_EXISTS.getDescription());
+      responseMessage.setStatus(ResponseStatus.SRC_ACC_DOES_NOT_EXISTS);
+      return responseMessage;
     }
     Account dstAccount = accountService.getAccountById(
-            paymentRequest.getUserId(),
-            paymentRequest.getDstAccount());
+            paymentDTO.getUserId(),
+            paymentDTO.getDstAccount());
     if (null == dstAccount) {
-      logger.error(DESTINATION_ACCOUNT_DOES_NOT_EXISTS);
-      throw new IllegalArgumentException(DESTINATION_ACCOUNT_DOES_NOT_EXISTS);
+      logger.error(ResponseStatus.DEST_ACC_DOES_NOT_EXISTS.getDescription());
+      responseMessage.setStatus(ResponseStatus.DEST_ACC_DOES_NOT_EXISTS);
+      return responseMessage;
     }
-    return paymentService.deposit(dstAccount, paymentRequest.getAmount());
+    if (srcAccount.getBalance().compareTo(paymentDTO.getAmount()) < 0) {
+      logger.error(ResponseStatus
+                           .NOT_ENOUGH_MONEY_FOR_A_TRANSACTION
+                           .getDescription());
+      responseMessage.setStatus(ResponseStatus
+                                        .NOT_ENOUGH_MONEY_FOR_A_TRANSACTION);
+      return responseMessage;
+    }
+
+    Payment payment = paymentService.deposit(dstAccount,
+                                             paymentDTO.getAmount());
+    responseMessage.setStatus(ResponseStatus.SUCCESS);
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add(Payment.class.getSimpleName(),
+                   gson.toJsonTree(payment, Payment.class));
+    responseMessage.setJsonMessage(jsonObject);
+    logger.info("Transfer Money . Response: {}",
+                responseMessage.getJsonMessage());
+    return responseMessage;
   }
 
   @Override
-  public synchronized Payment withdraw(final PaymentRequest paymentRequest) {
-    if (paymentRequest.getUserId() == null) {
-      logger.error(EMPTY_USER_ID);
-      throw new IllegalArgumentException(EMPTY_USER_ID);
+  public synchronized ResponseMessage deposit(final String data) {
+    Gson gson = new Gson();
+    logger.info("Deposit account. Request: {}", data);
+    ResponseMessage responseMessage = new ResponseMessage();
+    if (data.isEmpty()) {
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
     }
-    if (userService.userNotExist(paymentRequest.getUserId())) {
-      logger.error(USER_NOT_FOUND);
-      throw new IllegalArgumentException(USER_NOT_FOUND);
+    PaymentDTO paymentDTO;
+    try {
+      JsonObject jsonObject = gson.fromJson(data, JsonObject.class);
+      paymentDTO = gson.fromJson(jsonObject, PaymentDTO.class);
+    } catch (Exception e) {
+      logger.error(JSON_PARSING_ERROR, data, e);
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
     }
-    if (StringUtils.isBlank(paymentRequest.getSrcAccount())) {
-      logger.error(EMPTY_SOURCE_ACCOUNT_ID);
-      throw new IllegalArgumentException(EMPTY_SOURCE_ACCOUNT_ID);
+    if (StringUtils.isBlank(paymentDTO.getDstAccount())) {
+      logger.error(ResponseStatus.EMPTY_DEST_ACC_ID.getDescription());
+      responseMessage.setStatus(ResponseStatus.EMPTY_DEST_ACC_ID);
+      return responseMessage;
+
     }
-    Account srcAccount = accountService.getAccountById(
-            paymentRequest.getUserId(),
-            paymentRequest.getSrcAccount());
-    if (null == srcAccount) {
-      logger.error(SOURCE_ACCOUNT_DOES_NOT_EXISTS);
-      throw new IllegalArgumentException(SOURCE_ACCOUNT_DOES_NOT_EXISTS);
+    if (paymentDTO.getUserId() == null) {
+      logger.error(ResponseStatus.EMPTY_USER_ID.getDescription());
+      responseMessage.setStatus(ResponseStatus.EMPTY_USER_ID);
+      return responseMessage;
     }
-    if (srcAccount.getBalance().compareTo(paymentRequest.getAmount()) < 0) {
-      logger.error(NOT_ENOUGH_MONEY_FOR_A_TRANSACTION);
-      throw new IllegalArgumentException(NOT_ENOUGH_MONEY_FOR_A_TRANSACTION);
+    if (userService.isUserNotExist(paymentDTO.getUserId())) {
+      logger.error(ResponseStatus.USER_DOES_NOT_EXIST.getDescription());
+      responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
+      return responseMessage;
+    }
+    Account dstAccount = accountService.getAccountById(
+            paymentDTO.getUserId(),
+            paymentDTO.getDstAccount());
+    if (null == dstAccount) {
+      logger.error(ResponseStatus.DEST_ACC_DOES_NOT_EXISTS.getDescription());
+      responseMessage.setStatus(ResponseStatus.DEST_ACC_DOES_NOT_EXISTS);
+      return responseMessage;
     }
 
-    return paymentService.withdraw(srcAccount, paymentRequest.getAmount());
+    Payment payment = paymentService.deposit(dstAccount,
+                                             paymentDTO.getAmount());
+    responseMessage.setStatus(ResponseStatus.SUCCESS);
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add(Payment.class.getSimpleName(),
+                   gson.toJsonTree(payment, Payment.class));
+    responseMessage.setJsonMessage(jsonObject);
+    logger.info("Deposit Account. Response: {}",
+                responseMessage.getJsonMessage());
+    return responseMessage;
+  }
+
+  @Override
+  public synchronized ResponseMessage withdraw(final String data) {
+    Gson gson = new Gson();
+    logger.info("Transfer money. Request: {}", data);
+    ResponseMessage responseMessage = new ResponseMessage();
+    if (data.isEmpty()) {
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
+    }
+    PaymentDTO paymentDTO;
+    try {
+      JsonObject jsonObject = gson.fromJson(data, JsonObject.class);
+      paymentDTO = gson.fromJson(jsonObject, PaymentDTO.class);
+    } catch (Exception e) {
+      logger.error(JSON_PARSING_ERROR, data, e);
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
+    }
+
+    if (paymentDTO.getUserId() == null) {
+      logger.error(ResponseStatus.EMPTY_USER_ID.getDescription());
+      responseMessage.setStatus(ResponseStatus.EMPTY_USER_ID);
+      return responseMessage;
+    }
+    if (userService.isUserNotExist(paymentDTO.getUserId())) {
+      logger.error(ResponseStatus.USER_DOES_NOT_EXIST.getDescription());
+      responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
+      return responseMessage;
+    }
+    if (StringUtils.isBlank(paymentDTO.getSrcAccount())) {
+      logger.error(ResponseStatus.EMPTY_SRC_ACC_ID.getDescription());
+      responseMessage.setStatus(ResponseStatus.EMPTY_SRC_ACC_ID);
+      return responseMessage;
+    }
+    Account srcAccount = accountService.getAccountById(
+            paymentDTO.getUserId(),
+            paymentDTO.getSrcAccount());
+    if (null == srcAccount) {
+      logger.error(ResponseStatus.SRC_ACC_DOES_NOT_EXISTS.getDescription());
+      responseMessage.setStatus(ResponseStatus.SRC_ACC_DOES_NOT_EXISTS);
+      return responseMessage;
+    }
+    if (srcAccount.getBalance().compareTo(paymentDTO.getAmount()) < 0) {
+      logger.error(ResponseStatus
+                           .NOT_ENOUGH_MONEY_FOR_A_TRANSACTION
+                           .getDescription());
+      responseMessage.setStatus(ResponseStatus
+                                        .NOT_ENOUGH_MONEY_FOR_A_TRANSACTION);
+      return responseMessage;
+    }
+
+    Payment payment = paymentService.withdraw(srcAccount,
+                                              paymentDTO.getAmount());
+    responseMessage.setStatus(ResponseStatus.SUCCESS);
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add(Payment.class.getSimpleName(),
+                   gson.toJsonTree(payment, Payment.class));
+    responseMessage.setJsonMessage(jsonObject);
+    logger.info("Withdraw. Response: {}",
+                responseMessage.getJsonMessage());
+    return responseMessage;
   }
 
   @Override
@@ -268,7 +388,7 @@ public final class ModelImpl implements Model {
       JsonObject jsonObject = gson.fromJson(data, JsonObject.class);
       userDTO = gson.fromJson(jsonObject, UserDTO.class);
     } catch (Exception e) {
-      logger.error("JSON parsing error. Input string: {} ;", data, e);
+      logger.error(JSON_PARSING_ERROR, data, e);
       responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
       return responseMessage;
     }
@@ -281,7 +401,8 @@ public final class ModelImpl implements Model {
     }
     responseMessage.setStatus(ResponseStatus.SUCCESS);
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("User", gson.toJsonTree(user, User.class));
+    jsonObject.add(User.class.getSimpleName(),
+                   gson.toJsonTree(user, User.class));
     responseMessage.setJsonMessage(jsonObject);
     logger.info("Create new client. Response: {}",
                 responseMessage.getJsonMessage());
@@ -289,7 +410,47 @@ public final class ModelImpl implements Model {
   }
 
   @Override
-  public synchronized BigDecimal getTotalBalanceByUser(final Integer userId) {
-    return accountService.getTotalBalanceByUser(userId);
+  public ResponseMessage getAccount(final String data) {
+    Gson gson = new Gson();
+    logger.info("Get account balance. Request: {}", data);
+    ResponseMessage responseMessage = new ResponseMessage();
+    if (data.isEmpty()) {
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
+    }
+
+    AccountDTO accountDTO;
+    try {
+      JsonObject jsonObject = gson.fromJson(data, JsonObject.class);
+      accountDTO = gson.fromJson(jsonObject, AccountDTO.class);
+    } catch (Exception e) {
+      logger.error(JSON_PARSING_ERROR, data, e);
+      responseMessage.setStatus(ResponseStatus.BAD_REQUEST);
+      return responseMessage;
+    }
+
+    User user = userService.getUser(accountDTO.getUserId());
+    if (user == null) {
+      logger.error(USER_DOES_NOT_EXIST, accountDTO.getUserId());
+      responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
+      return responseMessage;
+    }
+
+    Account account = accountService.getAccountById(user.getId(),
+                                                    accountDTO.getNumber());
+    if (account == null) {
+      logger.warn("Account with number {} does not exist.",
+                  accountDTO.getNumber());
+      responseMessage.setStatus(ResponseStatus.ACCOUNT_DOES_NOT_EXIST);
+      return responseMessage;
+    }
+    responseMessage.setStatus(ResponseStatus.SUCCESS);
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.add(Account.class.getSimpleName(),
+                   gson.toJsonTree(account, Account.class));
+    responseMessage.setJsonMessage(jsonObject);
+    logger.info("Account information. Response: {}",
+                responseMessage.getJsonMessage());
+    return responseMessage;
   }
 }

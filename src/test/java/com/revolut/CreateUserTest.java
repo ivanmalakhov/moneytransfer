@@ -12,7 +12,7 @@ import static com.revolut.TestJson.USER_JSON;
 import static org.junit.Assert.assertEquals;
 
 public class CreateUserTest {
-  private Logger logger = LoggerFactory.getLogger(CreateUserTest.class);
+  private final Logger logger = LoggerFactory.getLogger(CreateUserTest.class);
 
   @Test
   public void userExists() {

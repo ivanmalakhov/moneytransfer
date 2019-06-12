@@ -1,8 +1,8 @@
 package com.revolut.service.impl;
 
 import com.revolut.data.Account;
-import com.revolut.dto.Currency;
 import com.revolut.data.User;
+import com.revolut.dto.Currency;
 import com.revolut.service.AccountService;
 import org.apache.log4j.Logger;
 
@@ -14,23 +14,40 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Account service implementation.
+ */
 public enum AccountServiceImpl implements AccountService {
+  /**
+   * Singleton.
+   */
   INSTANCE;
-
+  /**
+   * Account storage.
+   */
   private Map<Integer, Set<Account>> userAccounts;
+  /**
+   * Logger.
+   */
   private Logger logger = Logger.getLogger(AccountServiceImpl.class);
-  Random rand = new Random();
 
+  /**
+   * Constructor. Create account storage.
+   */
   AccountServiceImpl() {
     userAccounts = new HashMap<>();
   }
 
-  public Account create(Currency currency, User user) {
+  @Override
+  public Account create(final Currency currency, final User user) {
     Account account = new Account(UUID.randomUUID(),
-            "40702" + currency.code() + rand.nextInt(Integer.MAX_VALUE),
-            BigDecimal.ZERO,
-            user,
-            currency);
+                                  "40702"
+                                          + currency.code()
+                                          + new Random().
+                                          nextInt(Integer.MAX_VALUE),
+                                  BigDecimal.ZERO,
+                                  user,
+                                  currency);
     if (!userAccounts.containsKey(user.getId())) {
       userAccounts.put(user.getId(), new HashSet<>());
     }
@@ -40,12 +57,13 @@ public enum AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public Set<Account> getAccountListByUser(Integer userId) {
+  public Set<Account> getAccountListByUser(final Integer userId) {
     return userAccounts.get(userId);
   }
 
   @Override
-  public Account getAccountById(Integer userId, String accountNumber) {
+  public Account getAccountById(final Integer userId,
+                                final String accountNumber) {
     final Account[] account = {null};
     userAccounts.get(userId)
             .stream()
@@ -54,13 +72,4 @@ public enum AccountServiceImpl implements AccountService {
             .ifPresent(a -> account[0] = a);
     return account[0];
   }
-
-  @Override
-  public BigDecimal getTotalBalanceByUser(Integer userId) {
-    return userAccounts.get(userId)
-            .stream()
-            .map(Account::getBalance)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-  }
-
 }

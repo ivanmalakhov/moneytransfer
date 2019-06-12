@@ -1,13 +1,10 @@
 package com.revolut.service;
 
-import com.revolut.dto.PaymentRequest;
 import com.revolut.data.Account;
-import com.revolut.dto.Currency;
-import com.revolut.dto.Payment;
-import com.revolut.dto.ResponseMessage;
 import com.revolut.data.User;
+import com.revolut.dto.Currency;
+import com.revolut.dto.ResponseMessage;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 /**
@@ -22,6 +19,7 @@ public interface Model {
    * @return Account
    */
   Account createAccount(Currency currency, User user);
+
   /**
    * Create new account.
    *
@@ -44,37 +42,45 @@ public interface Model {
    * @param userId userId
    * @return Set<Account>
    */
-  Set<Account> getAccountListByUser(Integer userId);
+  Set<Account> getAccountsByUser(Integer userId);
+
+  /**
+   * Get All user Account.
+   *
+   * @param data - Json request
+   * @return ResponseMessage
+   */
+  ResponseMessage getAccountsByUser(String data);
 
   /**
    * Transfer money from one account to another.
    *
-   * @param paymentRequest paymentRequest
-   * @return Payment
+   * @param data json request
+   * @return ResponseMessage
    */
-  Payment transferMoney(PaymentRequest paymentRequest);
+  ResponseMessage transferMoney(String data);
 
   /**
    * Withdraw money from account.
    *
-   * @param paymentRequest paymentRequest
-   * @return Payment
+   * @param data json request
+   * @return ResponseMessage
    */
-  Payment withdraw(PaymentRequest paymentRequest);
+  ResponseMessage withdraw(String data);
 
   /**
    * Deposit money to account.
    *
-   * @param paymentRequest paymentRequest
-   * @return Payment
+   * @param data - json request
+   * @return ResponseMessage
    */
-  Payment deposit(PaymentRequest paymentRequest);
+  ResponseMessage deposit(String data);
 
   /**
-   * Get total balance for all user account.
+   * Get information about account.
    *
-   * @param userId user id
-   * @return total balance
+   * @param data - Json request
+   * @return ResponseMessage account information
    */
-  BigDecimal getTotalBalanceByUser(Integer userId);
+  ResponseMessage getAccount(String data);
 }

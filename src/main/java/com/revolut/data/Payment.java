@@ -1,6 +1,5 @@
-package com.revolut.dto;
+package com.revolut.data;
 
-import com.revolut.data.Account;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -8,7 +7,7 @@ import java.util.Date;
 import java.util.Random;
 
 /**
- * Payment Data Transfer Object.
+ * Class with information about payment.
  */
 @Data
 public final class Payment {
@@ -57,8 +56,8 @@ public final class Payment {
   public void execute() {
     if (null != accountFrom) {
       accountFrom.setBalance(accountFrom
-              .getBalance()
-              .subtract(this.getAmount()));
+                                     .getBalance()
+                                     .subtract(this.getAmount()));
     }
     if (null != accountTo) {
       accountTo.setBalance(accountTo.getBalance().add(this.getAmount()));

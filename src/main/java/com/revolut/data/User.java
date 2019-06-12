@@ -6,17 +6,36 @@ import lombok.Data;
 
 import java.util.Random;
 
+/**
+ * Class with information about user.
+ */
 @Data
 public class User {
+  /**
+   * User ID.
+   */
   private Integer id;
+  /**
+   * User first Name.
+   */
   private String firstName;
-  private String secondName;
+  /**
+   * User second Name.
+   */
+  private String lastName;
 
+  /**
+   * Custom constructor.
+   *
+   * @param userFirstName - user first name
+   * @param userLastName  - user last name
+   */
   @JsonCreator
-  public User(@JsonProperty("firstName") String firstName, @JsonProperty("secondName") String secondName) {
+  public User(final @JsonProperty("firstName") String userFirstName,
+              final @JsonProperty("lastName") String userLastName) {
     Random rand = new Random();
     this.id = rand.nextInt(Integer.MAX_VALUE);
-    this.firstName = firstName;
-    this.secondName = secondName;
+    this.firstName = userFirstName;
+    this.lastName = userLastName;
   }
 }

@@ -12,8 +12,8 @@ import static spark.Spark.awaitInitialization;
 
 @Ignore
 public class TestServerAlive {
-  private Logger logger = Logger.getLogger(TestServerAlive.class);
-  private Server server = new Server();
+  private final Logger logger = Logger.getLogger(TestServerAlive.class);
+  private final Server server = new Server();
 
   /**
    * Start server and awaiting initialization

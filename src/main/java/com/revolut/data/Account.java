@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
- * Account class.
+ * Class with information about account.
  */
 @Data
 public class Account {
