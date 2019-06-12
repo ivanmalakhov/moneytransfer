@@ -154,7 +154,8 @@ public class TransferMoneyTest {
 
     responseMessage = model.withdraw(gson.toJson(paymentDTO));
     logger.info("WithdrawPayment: " + responseMessage.getJsonMessage());
-    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
+    assertEquals(ResponseStatus.NOT_ENOUGH_MONEY_FOR_A_TRANSACTION,
+                 responseMessage.getStatus());
   }
 
 /*  @Test

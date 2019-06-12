@@ -6,7 +6,7 @@ import lombok.Data;
  * Data transfer object with user information.
  */
 @Data
-public class UserDTO {
+public class UserDTO implements AbstractDTO {
   /**
    * User id.
    */

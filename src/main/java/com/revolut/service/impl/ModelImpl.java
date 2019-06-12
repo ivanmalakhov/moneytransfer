@@ -243,8 +243,9 @@ public final class ModelImpl implements Model {
       return responseMessage;
     }
 
-    Payment payment = paymentService.deposit(dstAccount,
-                                             paymentDTO.getAmount());
+    Payment payment = paymentService.transferMoney(srcAccount,
+                                                   dstAccount,
+                                                   paymentDTO.getAmount());
     responseMessage.setStatus(ResponseStatus.SUCCESS);
     JsonObject jsonObject = new JsonObject();
     jsonObject.add(Payment.class.getSimpleName(),
