@@ -110,7 +110,8 @@ public final class ModelImpl implements Model {
     }
     responseMessage.setStatus(ResponseStatus.SUCCESS);
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Account", gson.toJsonTree(account, Account.class));
+    jsonObject.add(Account.class.getSimpleName(),
+                   gson.toJsonTree(account, Account.class));
     responseMessage.setJsonMessage(jsonObject);
     logger.info("Create new account. Response: {}",
                 responseMessage.getJsonMessage());
@@ -246,7 +247,8 @@ public final class ModelImpl implements Model {
                                              paymentDTO.getAmount());
     responseMessage.setStatus(ResponseStatus.SUCCESS);
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Payment", gson.toJsonTree(payment, Payment.class));
+    jsonObject.add(Payment.class.getSimpleName(),
+                   gson.toJsonTree(payment, Payment.class));
     responseMessage.setJsonMessage(jsonObject);
     logger.info("Transfer Money . Response: {}",
                 responseMessage.getJsonMessage());
@@ -300,7 +302,8 @@ public final class ModelImpl implements Model {
                                              paymentDTO.getAmount());
     responseMessage.setStatus(ResponseStatus.SUCCESS);
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Payment", gson.toJsonTree(payment, Payment.class));
+    jsonObject.add(Payment.class.getSimpleName(),
+                   gson.toJsonTree(payment, Payment.class));
     responseMessage.setJsonMessage(jsonObject);
     logger.info("Deposit Account. Response: {}",
                 responseMessage.getJsonMessage());
@@ -362,7 +365,8 @@ public final class ModelImpl implements Model {
                                               paymentDTO.getAmount());
     responseMessage.setStatus(ResponseStatus.SUCCESS);
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Payment", gson.toJsonTree(payment, Payment.class));
+    jsonObject.add(Payment.class.getSimpleName(),
+                   gson.toJsonTree(payment, Payment.class));
     responseMessage.setJsonMessage(jsonObject);
     logger.info("Withdraw. Response: {}",
                 responseMessage.getJsonMessage());
@@ -397,7 +401,8 @@ public final class ModelImpl implements Model {
     }
     responseMessage.setStatus(ResponseStatus.SUCCESS);
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("User", gson.toJsonTree(user, User.class));
+    jsonObject.add(User.class.getSimpleName(),
+                   gson.toJsonTree(user, User.class));
     responseMessage.setJsonMessage(jsonObject);
     logger.info("Create new client. Response: {}",
                 responseMessage.getJsonMessage());
@@ -441,7 +446,8 @@ public final class ModelImpl implements Model {
     }
     responseMessage.setStatus(ResponseStatus.SUCCESS);
     JsonObject jsonObject = new JsonObject();
-    jsonObject.add("Account", gson.toJsonTree(account, Account.class));
+    jsonObject.add(Account.class.getSimpleName(),
+                   gson.toJsonTree(account, Account.class));
     responseMessage.setJsonMessage(jsonObject);
     logger.info("Account information. Response: {}",
                 responseMessage.getJsonMessage());
