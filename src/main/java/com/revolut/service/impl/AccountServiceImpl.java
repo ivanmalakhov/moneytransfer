@@ -40,11 +40,11 @@ public enum AccountServiceImpl implements AccountService {
 
   @Override
   public Account create(final Currency currency, final User user) {
-    Random rand = new Random();
     Account account = new Account(UUID.randomUUID(),
                                   "40702"
                                           + currency.code()
-                                          + rand.nextInt(Integer.MAX_VALUE),
+                                          + new Random().
+                                          nextInt(Integer.MAX_VALUE),
                                   BigDecimal.ZERO,
                                   user,
                                   currency);

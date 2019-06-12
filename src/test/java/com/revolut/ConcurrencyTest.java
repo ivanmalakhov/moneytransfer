@@ -6,10 +6,12 @@ import com.revolut.data.User;
 import com.revolut.dto.Currency;
 import com.revolut.dto.PaymentDTO;
 import com.revolut.dto.ResponseMessage;
+import com.revolut.dto.ResponseStatus;
 import com.revolut.service.Model;
 import com.revolut.service.impl.ModelImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +22,9 @@ import java.util.Set;
 
 import static com.revolut.TestJson.USER_JSON;
 import static com.revolut.TestUtils.createUser;
+import static org.junit.Assert.assertEquals;
 
-class ConcurrencyTest {
+public class ConcurrencyTest {
   private Model model;
   private final Logger logger = LoggerFactory.getLogger(ConcurrencyTest.class);
   private User user;
@@ -40,8 +43,11 @@ class ConcurrencyTest {
 
   }
 
+  @Test
+  public void test1() {
+    createAccountAndDepositMoney(BigDecimal.TEN);
+  }
 
-  // deposit money
   private void createAccountAndDepositMoney(BigDecimal amount) {
     for (int i = 0; i < ConcurrencyTest.N_ACCOUNTS; i++) {
       depositMoney(model.createAccount(Currency.EUR, user), amount);
@@ -57,6 +63,7 @@ class ConcurrencyTest {
 
     ResponseMessage responseMessage = model.deposit(gson.toJson(paymentDTO));
     logger.info("Deposit money {}", responseMessage.getJsonMessage());
+    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
   }
 
 /*
