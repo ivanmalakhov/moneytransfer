@@ -12,11 +12,11 @@ public class UserDTO {
    */
   private Integer id;
   /**
-   * User FirstName.
+   * User first name.
    */
   private String firstName;
   /**
-   * User LastName.
+   * User last Name.
    */
   private String lastName;
 }

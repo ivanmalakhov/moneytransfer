@@ -14,23 +14,40 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Account service implementation.
+ */
 public enum AccountServiceImpl implements AccountService {
+  /**
+   * Singleton.
+   */
   INSTANCE;
-
+  /**
+   * Account storage.
+   */
   private Map<Integer, Set<Account>> userAccounts;
+  /**
+   * Logger.
+   */
   private Logger logger = Logger.getLogger(AccountServiceImpl.class);
-  Random rand = new Random();
 
+  /**
+   * Constructor. Create account storage.
+   */
   AccountServiceImpl() {
     userAccounts = new HashMap<>();
   }
 
+  @Override
   public Account create(final Currency currency, final User user) {
+    Random rand = new Random();
     Account account = new Account(UUID.randomUUID(),
-            "40702" + currency.code() + rand.nextInt(Integer.MAX_VALUE),
-            BigDecimal.ZERO,
-            user,
-            currency);
+                                  "40702"
+                                          + currency.code()
+                                          + rand.nextInt(Integer.MAX_VALUE),
+                                  BigDecimal.ZERO,
+                                  user,
+                                  currency);
     if (!userAccounts.containsKey(user.getId())) {
       userAccounts.put(user.getId(), new HashSet<>());
     }
@@ -55,13 +72,4 @@ public enum AccountServiceImpl implements AccountService {
             .ifPresent(a -> account[0] = a);
     return account[0];
   }
-
-  @Override
-  public BigDecimal getTotalBalanceByUser(final Integer userId) {
-    return userAccounts.get(userId)
-            .stream()
-            .map(Account::getBalance)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-  }
-
 }

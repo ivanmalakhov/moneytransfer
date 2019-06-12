@@ -21,16 +21,16 @@ import java.util.Set;
 import static com.revolut.TestJson.USER_JSON;
 import static com.revolut.TestUtils.createUser;
 
-public class ConcurrencyTest {
+class ConcurrencyTest {
   private Model model;
-  private Logger logger = LoggerFactory.getLogger(ConcurrencyTest.class);
+  private final Logger logger = LoggerFactory.getLogger(ConcurrencyTest.class);
   private User user;
   private static final int N_ACCOUNTS = 1000;
   private static final BigDecimal INITIAL_BALANCE = BigDecimal.valueOf(10000);
   private static final BigDecimal MAX_AMOUNT = BigDecimal.valueOf(10);
   private static final int DELAY = 10;
-  private List<Account> accounts = new ArrayList<>();
-  private Gson gson = new Gson();
+  private final List<Account> accounts = new ArrayList<>();
+  private final Gson gson = new Gson();
 
   @Before
   public void init() {

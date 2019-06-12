@@ -1,7 +1,7 @@
 package com.revolut.service.impl;
 
 import com.revolut.data.Account;
-import com.revolut.dto.Payment;
+import com.revolut.data.Payment;
 import com.revolut.service.PaymentService;
 
 import java.math.BigDecimal;
@@ -17,7 +17,7 @@ public enum PaymentServiceImpl implements PaymentService {
    */
   INSTANCE;
   /**
-   * All payments.
+   * All payments storage.
    */
   private List<Payment> payments;
 

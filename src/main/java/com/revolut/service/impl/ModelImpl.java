@@ -3,10 +3,10 @@ package com.revolut.service.impl;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.revolut.data.Account;
+import com.revolut.data.Payment;
 import com.revolut.data.User;
 import com.revolut.dto.AccountDTO;
 import com.revolut.dto.Currency;
-import com.revolut.dto.Payment;
 import com.revolut.dto.PaymentDTO;
 import com.revolut.dto.ResponseMessage;
 import com.revolut.dto.ResponseStatus;
@@ -38,7 +38,7 @@ public final class ModelImpl implements Model {
   /**
    * Constant "User doesn't exist".
    */
-  private static final String USER_DOESN_T_EXIST =
+  private static final String USER_DOES_NOT_EXIST =
           "User with id={} doesn't exist";
 
   /**
@@ -70,7 +70,7 @@ public final class ModelImpl implements Model {
   @Override
   public synchronized Account createAccount(final Currency currency,
                                             final User user) {
-    if (userService.userNotExist(user)) {
+    if (userService.isUserNotExist(user)) {
       logger.error(USER_NOT_FOUND);
       throw new IllegalArgumentException(USER_NOT_FOUND);
     }
@@ -97,7 +97,7 @@ public final class ModelImpl implements Model {
     }
     User user = userService.getUser(accountDTO.getUserId());
     if (user == null) {
-      logger.error(USER_DOESN_T_EXIST, accountDTO.getUserId());
+      logger.error(USER_DOES_NOT_EXIST, accountDTO.getUserId());
       responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
       return responseMessage;
     }
@@ -120,7 +120,7 @@ public final class ModelImpl implements Model {
 
   @Override
   public synchronized Set<Account> getAccountsByUser(final Integer userId) {
-    if (userService.userNotExist(userId)) {
+    if (userService.isUserNotExist(userId)) {
       logger.error(USER_NOT_FOUND);
       throw new IllegalArgumentException(USER_NOT_FOUND);
     }
@@ -156,7 +156,7 @@ public final class ModelImpl implements Model {
 
     User user = userService.getUser(userDTO.getId());
     if (user == null) {
-      logger.error(USER_DOESN_T_EXIST, userDTO.getId());
+      logger.error(USER_DOES_NOT_EXIST, userDTO.getId());
       responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
       return responseMessage;
     }
@@ -212,7 +212,7 @@ public final class ModelImpl implements Model {
       responseMessage.setStatus(ResponseStatus.EMPTY_USER_ID);
       return responseMessage;
     }
-    if (userService.userNotExist(paymentDTO.getUserId())) {
+    if (userService.isUserNotExist(paymentDTO.getUserId())) {
       logger.error(ResponseStatus.USER_DOES_NOT_EXIST.getDescription());
       responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
       return responseMessage;
@@ -282,7 +282,7 @@ public final class ModelImpl implements Model {
       responseMessage.setStatus(ResponseStatus.EMPTY_USER_ID);
       return responseMessage;
     }
-    if (userService.userNotExist(paymentDTO.getUserId())) {
+    if (userService.isUserNotExist(paymentDTO.getUserId())) {
       logger.error(ResponseStatus.USER_DOES_NOT_EXIST.getDescription());
       responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
       return responseMessage;
@@ -331,7 +331,7 @@ public final class ModelImpl implements Model {
       responseMessage.setStatus(ResponseStatus.EMPTY_USER_ID);
       return responseMessage;
     }
-    if (userService.userNotExist(paymentDTO.getUserId())) {
+    if (userService.isUserNotExist(paymentDTO.getUserId())) {
       logger.error(ResponseStatus.USER_DOES_NOT_EXIST.getDescription());
       responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
       return responseMessage;
@@ -426,7 +426,7 @@ public final class ModelImpl implements Model {
 
     User user = userService.getUser(accountDTO.getUserId());
     if (user == null) {
-      logger.error(USER_DOESN_T_EXIST, accountDTO.getUserId());
+      logger.error(USER_DOES_NOT_EXIST, accountDTO.getUserId());
       responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
       return responseMessage;
     }

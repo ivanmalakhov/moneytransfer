@@ -2,18 +2,41 @@ package com.revolut.service;
 
 import com.revolut.data.User;
 
+/**
+ * Service for working with user.
+ */
 public interface UserService {
-
+  /**
+   * Create new user.
+   *
+   * @param firstName - first name
+   * @param lastName  - last name
+   * @return User
+   */
   User create(String firstName, String lastName);
 
-  boolean userExist(User user);
+  /**
+   * Check user.
+   *
+   * @param user - user
+   * @return boolean
+   */
+  boolean isUserNotExist(User user);
 
-  boolean userExist(Integer userId);
+  /**
+   * Check user by user id.
+   *
+   * @param userId - user id
+   * @return boolean
+   */
+  boolean isUserNotExist(Integer userId);
 
-  boolean userNotExist(User user);
-
-  boolean userNotExist(Integer userId);
-
+  /**
+   * Get user by id.
+   *
+   * @param id - user id
+   * @return User
+   */
   User getUser(Integer id);
 
 }

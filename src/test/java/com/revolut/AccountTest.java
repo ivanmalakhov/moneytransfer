@@ -26,9 +26,9 @@ import static com.revolut.TestUtils.createUser;
 import static org.junit.Assert.assertEquals;
 
 public class AccountTest {
-  private Logger logger = LoggerFactory.getLogger(AccountTest.class);
+  private final Logger logger = LoggerFactory.getLogger(AccountTest.class);
   private User user;
-  private Gson gson = new Gson();
+  private final Gson gson = new Gson();
   private Model model;
 
   @Before
@@ -64,7 +64,7 @@ public class AccountTest {
     UserDTO userDTO = new UserDTO();
     userDTO.setId(user.getId());
     userDTO.setFirstName(user.getFirstName());
-    userDTO.setLastName(user.getSecondName());
+    userDTO.setLastName(user.getLastName());
     ResponseMessage responseMessage = model.getAccountsByUser(gson.toJson(userDTO));
     logger.info("Account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.ACCOUNT_DOES_NOT_EXIST, responseMessage.getStatus());
@@ -106,11 +106,6 @@ public class AccountTest {
     logger.info("New account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 
-    JsonObject jsonObject = gson.fromJson(responseMessage.getJsonMessage(),
-                                          JsonObject.class)
-            .getAsJsonObject("Info").getAsJsonObject("Account");
-    Account account = gson.fromJson(jsonObject, Account.class);
-
     AccountDTO getAccountDto = new AccountDTO();
     getAccountDto.setNumber("qqe");
     getAccountDto.setUserId(user.getId());
@@ -138,7 +133,7 @@ public class AccountTest {
     UserDTO userDTO = new UserDTO();
     userDTO.setId(user.getId());
     userDTO.setFirstName(user.getFirstName());
-    userDTO.setLastName(user.getSecondName());
+    userDTO.setLastName(user.getLastName());
 
     responseMessage = model.getAccountsByUser(gson.toJson(userDTO));
     logger.info("Account: {}", responseMessage.getJsonMessage());

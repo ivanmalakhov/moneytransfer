@@ -38,14 +38,14 @@ To create user send POST request:
 curl -XPOST http://localhost:4567/user/create -d '
   {
    "firstName" : "FirstName",
-   "secondName" : "LastName" 
+   "lastName" : "LastName" 
    }'
 ```
 The server will respond with information about the created user in a JSON format:
 ```
 {
   "firstName" : "FirstName",
-  "secondName" : "LastName",
+  "lastName" : "LastName",
   "id" : 285246008
 }
 ```
@@ -57,7 +57,7 @@ curl -XPOST http://localhost:4567/account/create -d '
     "currency": "EUR",
     "user": {
         "firstName": "FirstName",
-        "secondName": "LastName",
+        "lastName": "LastName",
         "id": 285246008
     }
 }'
@@ -70,7 +70,7 @@ The server will respond with information about the created account in a JSON for
   "balance" : 0,
   "user" : {
     "firstName" : "FirstName",
-    "secondName" : "LastName",
+    "lastName" : "LastName",
     "id" : 285246008
   },
   "currency" : "EUR"
@@ -82,7 +82,7 @@ To get information about all account you can submit a GET request :
 curl -XGET http://localhost:4567/account/getall -d'
 {
     "firstName" : "FirstName",
-    "secondName" : "LastName",
+    "lastName" : "LastName",
     "id" : 285246008
 }'
 ```
@@ -94,7 +94,7 @@ The server will respond with information about the all user accounts in a JSON f
   "balance" : 0,
   "user" : {
     "firstName" : "FirstName",
-    "secondName" : "LastName",
+    "lastName" : "LastName",
     "id" : 285246008
   },
   "currency" : "EUR"
@@ -107,7 +107,7 @@ To get information about total balance on all user accounts, you can submit a GE
 curl -XGET http://localhost:4567/account/totalbalance -d'
 {
     "firstName" : "FirstName",
-    "secondName" : "LastName",
+    "lastName" : "LastName",
     "id" : 285246008
 }'
 ```
@@ -134,7 +134,7 @@ The server will response with information about payment transaction, looks like
     "balance" : 50,
     "user" : {
       "firstName" : "FirstName",
-      "secondName" : "LastName",
+      "lastName" : "LastName",
       "id" : 285246008
     },
     "currency" : "EUR"
@@ -163,7 +163,7 @@ Server will response with information about payment transaction, looks like
     "balance" : 40,
     "user" : {
       "firstName" : "FirstName",
-      "secondName" : "LastName",
+      "lastName" : "LastName",
       "id" : 285246008
     },
     "currency" : "EUR"
@@ -194,7 +194,7 @@ Server will response with information about payment transaction, looks like
     "balance" : 20,
     "user" : {
       "firstName" : "FirstName",
-      "secondName" : "LastName",
+      "lastName" : "LastName",
       "id" : 285246008
     },
     "currency" : "EUR"
@@ -205,7 +205,7 @@ Server will response with information about payment transaction, looks like
     "balance" : 10,
     "user" : {
       "firstName" : "FirstName",
-      "secondName" : "LastName",
+      "lastName" : "LastName",
       "id" : 285246008
     },
     "currency" : "EUR"

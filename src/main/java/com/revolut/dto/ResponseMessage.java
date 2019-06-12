@@ -20,7 +20,7 @@ public final class ResponseMessage {
   /**
    * Gson object.
    */
-  private Gson gson = new Gson();
+  private final Gson gson = new Gson();
 
   /**
    * Return information about status.

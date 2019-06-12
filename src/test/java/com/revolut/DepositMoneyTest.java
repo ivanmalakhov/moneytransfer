@@ -20,8 +20,8 @@ import static com.revolut.TestUtils.createUser;
 import static org.junit.Assert.assertEquals;
 
 public class DepositMoneyTest {
-  private Logger logger = Logger.getLogger(TransferMoneyTest.class);
-  private Gson gson = new Gson();
+  private final Logger logger = Logger.getLogger(TransferMoneyTest.class);
+  private final Gson gson = new Gson();
   private User user;
   private Account account1;
   private Model model;

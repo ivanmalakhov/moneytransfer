@@ -20,13 +20,13 @@ import static com.revolut.TestUtils.createUser;
 import static org.junit.Assert.assertEquals;
 
 public class TransferMoneyTest {
-  private Logger logger = Logger.getLogger(TransferMoneyTest.class);
+  private final Logger logger = Logger.getLogger(TransferMoneyTest.class);
 
   private User user;
   private Account account1, account2;
   private static final int DELAY = 10;
   private Model model;
-  private Gson gson = new Gson();
+  private final Gson gson = new Gson();
 
   @Before
   public void init() {
