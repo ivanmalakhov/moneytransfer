@@ -1,9 +1,9 @@
 package com.revolut.service;
 
-import com.revolut.data.Account;
-import com.revolut.data.User;
 import com.revolut.dto.Currency;
 import com.revolut.dto.ResponseMessage;
+import com.revolut.entity.Account;
+import com.revolut.entity.User;
 
 import java.util.Set;
 
@@ -23,7 +23,7 @@ public interface Model {
   /**
    * Create new account.
    *
-   * @param data Json with request data
+   * @param data Json with request entity
    * @return Account
    */
   ResponseMessage createAccount(String data);
@@ -31,7 +31,7 @@ public interface Model {
   /**
    * Create new User without handler.
    *
-   * @param data Json with data about new user
+   * @param data Json with entity about new user
    * @return ResponseMessage
    */
   ResponseMessage createUser(String data);

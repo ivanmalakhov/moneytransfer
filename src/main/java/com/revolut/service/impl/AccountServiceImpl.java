@@ -1,8 +1,8 @@
 package com.revolut.service.impl;
 
-import com.revolut.data.Account;
-import com.revolut.data.User;
 import com.revolut.dto.Currency;
+import com.revolut.entity.Account;
+import com.revolut.entity.User;
 import com.revolut.service.AccountService;
 import org.apache.log4j.Logger;
 

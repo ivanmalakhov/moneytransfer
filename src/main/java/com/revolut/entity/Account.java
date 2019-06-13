@@ -1,4 +1,4 @@
-package com.revolut.data;
+package com.revolut.entity;
 
 import com.revolut.dto.Currency;
 import lombok.Data;

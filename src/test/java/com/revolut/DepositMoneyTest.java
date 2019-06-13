@@ -1,12 +1,12 @@
 package com.revolut;
 
 import com.google.gson.Gson;
-import com.revolut.data.Account;
-import com.revolut.data.User;
 import com.revolut.dto.Currency;
 import com.revolut.dto.PaymentDTO;
 import com.revolut.dto.ResponseMessage;
 import com.revolut.dto.ResponseStatus;
+import com.revolut.entity.Account;
+import com.revolut.entity.User;
 import com.revolut.service.Model;
 import com.revolut.service.impl.ModelImpl;
 import org.apache.log4j.Logger;
@@ -80,6 +80,18 @@ public class DepositMoneyTest {
 
   @Test
   public void depositMoneyOK() {
+    PaymentDTO paymentDTO = new PaymentDTO();
+    paymentDTO.setUserId(user.getId());
+    paymentDTO.setAmount(BigDecimal.valueOf(9999));
+    paymentDTO.setDstAccount(account1.getNumber());
+
+    ResponseMessage responseMessage = model.deposit(gson.toJson(paymentDTO));
+    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
+
+  }
+
+  @Test
+  public void depositMoneyTest() {
     PaymentDTO paymentDTO = new PaymentDTO();
     paymentDTO.setUserId(user.getId());
     paymentDTO.setAmount(BigDecimal.valueOf(9999));

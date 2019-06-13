@@ -1,6 +1,6 @@
 package com.revolut.service;
 
-import com.revolut.data.User;
+import com.revolut.entity.User;
 
 /**
  * Service for working with user.

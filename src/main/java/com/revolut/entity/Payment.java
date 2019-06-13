@@ -1,4 +1,4 @@
-package com.revolut.data;
+package com.revolut.entity;
 
 import lombok.Data;
 
