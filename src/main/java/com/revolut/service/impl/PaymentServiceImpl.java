@@ -1,8 +1,8 @@
 package com.revolut.service.impl;
 
 import com.revolut.entity.Payment;
-import com.revolut.service.PaymentParams;
 import com.revolut.service.PaymentService;
+import com.revolut.service.processing.params.PaymentParams;
 
 import java.util.ArrayList;
 import java.util.List;

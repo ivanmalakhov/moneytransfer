@@ -4,9 +4,9 @@ import com.revolut.dto.PaymentDTO;
 import com.revolut.dto.ResponseMessage;
 import com.revolut.dto.ResponseStatus;
 import com.revolut.entity.Account;
-import com.revolut.service.PaymentParams;
 import com.revolut.service.processing.ProcessingStage;
 import com.revolut.service.processing.StageData;
+import com.revolut.service.processing.params.PaymentParams;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -24,7 +24,7 @@ public class CheckAmountStage extends ProcessingStage {
   @Override
   public ResponseMessage performOperation(final StageData data) {
     ResponseMessage responseMessage = new ResponseMessage();
-    PaymentParams paymentParams = data.getPaymentParams();
+    PaymentParams paymentParams = (PaymentParams) data.getParams();
     Account srcAccount = paymentParams.getSrcAccount();
     PaymentDTO paymentDTO = (PaymentDTO) data.getDto();
 
@@ -38,7 +38,7 @@ public class CheckAmountStage extends ProcessingStage {
       return responseMessage;
     }
     paymentParams.setAmount(paymentDTO.getAmount());
-    data.setPaymentParams(paymentParams);
+    data.setParams(paymentParams);
     return performNextOperation(data);
   }
 }

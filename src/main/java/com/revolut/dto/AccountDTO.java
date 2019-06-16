@@ -8,7 +8,7 @@ import java.util.UUID;
  * Data transfer object with new account information.
  */
 @Data
-public class AccountDTO implements AbstractDTO {
+public class AccountDTO extends AbstractDTO {
   /**
    * Unique id.
    */
@@ -21,10 +21,6 @@ public class AccountDTO implements AbstractDTO {
    * Account currency.
    */
   private Currency currency;
-  /**
-   * Owner id.
-   */
-  private Integer userId;
 
 
 }

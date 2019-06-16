@@ -62,7 +62,7 @@ public class AccountTest {
   @Test
   public void noAccountsTest() {
     UserDTO userDTO = new UserDTO();
-    userDTO.setId(user.getId());
+    userDTO.setUserId(user.getId());
     userDTO.setFirstName(user.getFirstName());
     userDTO.setLastName(user.getLastName());
     ResponseMessage responseMessage = model.getAccountsByUser(gson.toJson(userDTO));
@@ -131,7 +131,7 @@ public class AccountTest {
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 
     UserDTO userDTO = new UserDTO();
-    userDTO.setId(user.getId());
+    userDTO.setUserId(user.getId());
     userDTO.setFirstName(user.getFirstName());
     userDTO.setLastName(user.getLastName());
 

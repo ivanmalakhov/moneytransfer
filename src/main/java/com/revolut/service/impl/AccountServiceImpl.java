@@ -57,15 +57,15 @@ public enum AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public Set<Account> getAccountListByUser(final Integer userId) {
-    return userAccounts.get(userId);
+  public Set<Account> getAccountListByUser(final User user) {
+    return userAccounts.get(user.getId());
   }
 
   @Override
-  public Account getAccountById(final Integer userId,
-                                final String accountNumber) {
+  public Account getAccountById(final String accountNumber,
+                                final User user) {
     final Account[] account = {null};
-    userAccounts.get(userId)
+    userAccounts.get(user.getId())
             .stream()
             .filter(a -> a.getNumber().equals(accountNumber))
             .findFirst()

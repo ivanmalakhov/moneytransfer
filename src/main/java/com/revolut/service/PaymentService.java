@@ -1,6 +1,7 @@
 package com.revolut.service;
 
 import com.revolut.entity.Payment;
+import com.revolut.service.processing.params.PaymentParams;
 
 /**
  * Service for working with payment.

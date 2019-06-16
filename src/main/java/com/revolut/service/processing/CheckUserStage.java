@@ -1,9 +1,10 @@
 package com.revolut.service.processing;
 
-import com.revolut.dto.PaymentDTO;
+import com.revolut.dto.AbstractDTO;
 import com.revolut.dto.ResponseMessage;
 import com.revolut.dto.ResponseStatus;
 import com.revolut.service.UserService;
+import com.revolut.service.processing.params.Params;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +38,9 @@ public class CheckUserStage extends ProcessingStage {
    */
   @Override
   public ResponseMessage performOperation(final StageData data) {
-    PaymentDTO paymentDTO = (PaymentDTO) data.getDto();
+    AbstractDTO paymentDTO = data.getDto();
     ResponseMessage responseMessage = new ResponseMessage();
+    Params params = data.getParams();
     if (paymentDTO.getUserId() == null) {
       logger.error(ResponseStatus.EMPTY_USER_ID.getDescription());
       responseMessage.setStatus(ResponseStatus.EMPTY_USER_ID);
@@ -49,6 +51,8 @@ public class CheckUserStage extends ProcessingStage {
       responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
       return responseMessage;
     }
+    params.setUser(userService.getUser(paymentDTO.getUserId()));
+
     return performNextOperation(data);
   }
 }

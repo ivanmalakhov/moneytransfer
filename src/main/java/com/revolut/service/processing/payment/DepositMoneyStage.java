@@ -8,6 +8,7 @@ import com.revolut.entity.Payment;
 import com.revolut.service.PaymentService;
 import com.revolut.service.processing.ProcessingStage;
 import com.revolut.service.processing.StageData;
+import com.revolut.service.processing.params.PaymentParams;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -39,8 +40,7 @@ public class DepositMoneyStage extends ProcessingStage {
   public ResponseMessage performOperation(final StageData data) {
     Gson gson = new Gson();
     ResponseMessage responseMessage = new ResponseMessage();
-
-    Payment payment = paymentService.deposit(data.getPaymentParams());
+    Payment payment = paymentService.deposit((PaymentParams) data.getParams());
     responseMessage.setStatus(ResponseStatus.SUCCESS);
     JsonObject jsonObject = new JsonObject();
     jsonObject.add(Payment.class.getSimpleName(),

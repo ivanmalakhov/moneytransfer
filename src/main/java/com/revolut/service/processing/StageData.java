@@ -1,7 +1,7 @@
 package com.revolut.service.processing;
 
 import com.revolut.dto.AbstractDTO;
-import com.revolut.service.PaymentParams;
+import com.revolut.service.processing.params.Params;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -22,5 +22,5 @@ public class StageData {
   /**
    * Payment parameters.
    */
-  private PaymentParams paymentParams;
+  private Params params;
 }

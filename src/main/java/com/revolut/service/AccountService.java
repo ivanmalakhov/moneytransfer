@@ -22,17 +22,17 @@ public interface AccountService {
   /**
    * Get all user accounts.
    *
-   * @param userId - user id
+   * @param user User
    * @return accounts set
    */
-  Set<Account> getAccountListByUser(Integer userId);
+  Set<Account> getAccountListByUser(User user);
 
   /**
    * Get account by number.
    *
-   * @param userId        - user id
    * @param accountNumber - account number
+   * @param user          - User
    * @return Account
    */
-  Account getAccountById(Integer userId, String accountNumber);
+  Account getAccountById(String accountNumber, User user);
 }

@@ -1,7 +1,15 @@
 package com.revolut.dto;
 
+import lombok.Data;
+
 /**
  * abstract DTO.
  */
-public interface AbstractDTO {
+@Data
+public abstract class AbstractDTO {
+  /**
+   * User id.
+   */
+  private Integer userId;
+
 }
