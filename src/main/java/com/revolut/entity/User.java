@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.util.Random;
+import java.security.SecureRandom;
 
 /**
  * Class with information about user.
@@ -33,7 +33,7 @@ public class User {
   @JsonCreator
   public User(final @JsonProperty("firstName") String userFirstName,
               final @JsonProperty("lastName") String userLastName) {
-    Random rand = new Random();
+    SecureRandom rand = new SecureRandom();
     this.id = rand.nextInt(Integer.MAX_VALUE);
     this.firstName = userFirstName;
     this.lastName = userLastName;

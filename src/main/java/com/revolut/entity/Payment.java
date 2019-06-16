@@ -3,8 +3,8 @@ package com.revolut.entity;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.util.Date;
-import java.util.Random;
 
 /**
  * Class with information about payment.
@@ -42,7 +42,7 @@ public final class Payment {
   public Payment(final Account paymentAccountFrom,
                  final Account paymentAccountTo,
                  final BigDecimal paymentAmount) {
-    Random rand = new Random();
+    SecureRandom rand = new SecureRandom();
     this.id = rand.nextInt(Integer.MAX_VALUE);
     this.accountFrom = paymentAccountFrom;
     this.accountTo = paymentAccountTo;
