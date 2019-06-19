@@ -1,15 +1,17 @@
 package com.revolut;
 
 import com.google.gson.Gson;
-import com.revolut.data.Account;
-import com.revolut.data.User;
+import com.google.gson.JsonObject;
+import com.revolut.dto.AccountDTO;
 import com.revolut.dto.Currency;
 import com.revolut.dto.PaymentDTO;
 import com.revolut.dto.ResponseMessage;
 import com.revolut.dto.ResponseStatus;
+import com.revolut.entity.Account;
+import com.revolut.entity.User;
 import com.revolut.service.Model;
 import com.revolut.service.impl.ModelImpl;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,8 +21,8 @@ import static com.revolut.TestJson.USER_JSON;
 import static com.revolut.TestUtils.createUser;
 import static org.junit.Assert.assertEquals;
 
+@Slf4j
 public class TransferMoneyTest {
-  private final Logger logger = Logger.getLogger(TransferMoneyTest.class);
 
   private User user;
   private Account account1, account2;
@@ -32,11 +34,26 @@ public class TransferMoneyTest {
   public void init() {
     model = new ModelImpl();
     user = createUser(model, USER_JSON);
-    logger.info("New User: " + user);
-    account1 = model.createAccount(Currency.EUR, user);
-    logger.info("Account1: " + account1);
-    account2 = model.createAccount(Currency.EUR, user);
-    logger.info("Account2: " + account2);
+    log.info("New User: " + user);
+    account1 = createAccount(Currency.EUR, user);
+    log.info("Account1: " + account1);
+    account2 = createAccount(Currency.EUR, user);
+    log.info("Account2: " + account2);
+  }
+
+  private Account createAccount(Currency currency, User user) {
+    AccountDTO accountDTO = new AccountDTO();
+    accountDTO.setCurrency(currency);
+    accountDTO.setUserId(user.getId());
+    ResponseMessage responseMessage = model.createAccount(gson.toJson(accountDTO));
+    log.info("New account: {}", responseMessage.getJsonMessage());
+    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
+
+    JsonObject jsonObject = gson.fromJson(responseMessage.getJsonMessage(),
+                                          JsonObject.class)
+            .getAsJsonObject("Info").getAsJsonObject("Account");
+    Account account = gson.fromJson(jsonObject, Account.class);
+    return account;
   }
 
   // deposit money
@@ -144,7 +161,7 @@ public class TransferMoneyTest {
 
     ResponseMessage responseMessage;
     responseMessage = model.transferMoney(gson.toJson(paymentDTO));
-    logger.info("TransferMoney: " + responseMessage.getJsonMessage());
+    log.info("TransferMoney: " + responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 
     PaymentDTO withdrawRequest = new PaymentDTO();
@@ -153,8 +170,9 @@ public class TransferMoneyTest {
     withdrawRequest.setSrcAccount(account2.getNumber());
 
     responseMessage = model.withdraw(gson.toJson(paymentDTO));
-    logger.info("WithdrawPayment: " + responseMessage.getJsonMessage());
-    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
+    log.info("WithdrawPayment: " + responseMessage.getJsonMessage());
+    assertEquals(ResponseStatus.NOT_ENOUGH_MONEY_FOR_A_TRANSACTION,
+                 responseMessage.getStatus());
   }
 
 /*  @Test
@@ -173,7 +191,7 @@ public class TransferMoneyTest {
     Runnable r = () -> {
       try {
         Answer answer = transferMoneyHandler.process(paymentRequest, Collections.emptyMap());
-        logger.info(Thread.currentThread() + "; TotalBalance" + getTotalBalanceHandler.process(user, Collections.emptyMap()).getBody());
+        log.info(Thread.currentThread() + "; TotalBalance" + getTotalBalanceHandler.process(user, Collections.emptyMap()).getBody());
         sleep((int) (DELAY * Math.random()));
       } catch (InterruptedException e) {
         e.printStackTrace();
@@ -192,7 +210,7 @@ public class TransferMoneyTest {
       }
     }
 
-    logger.info("Итог: " + getTotalBalanceHandler.process(user, Collections.emptyMap()).getBody());
+    log.info("Итог: " + getTotalBalanceHandler.process(user, Collections.emptyMap()).getBody());
 
     Set<Account> accounts = model.getAccountListByUser(user.getId());
     BigDecimal sum = BigDecimal.ZERO;
@@ -206,7 +224,7 @@ public class TransferMoneyTest {
     withdrawRequest.setAmount(amount);
     withdrawRequest.setSrcAccount(account2.getNumber());
     Answer withdrawAnswer = withdrawMoneyHandler.process(withdrawRequest, Collections.emptyMap());
-    logger.info("WithdrawPayment: " + withdrawAnswer);
+    log.info("WithdrawPayment: " + withdrawAnswer);
     assertEquals(201, withdrawAnswer.getCode());
   }*/
 

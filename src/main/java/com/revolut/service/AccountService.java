@@ -1,8 +1,8 @@
 package com.revolut.service;
 
-import com.revolut.data.Account;
-import com.revolut.data.User;
 import com.revolut.dto.Currency;
+import com.revolut.entity.Account;
+import com.revolut.entity.User;
 
 import java.util.Set;
 
@@ -22,17 +22,17 @@ public interface AccountService {
   /**
    * Get all user accounts.
    *
-   * @param userId - user id
+   * @param user User
    * @return accounts set
    */
-  Set<Account> getAccountListByUser(Integer userId);
+  Set<Account> getAccountListByUser(User user);
 
   /**
    * Get account by number.
    *
-   * @param userId        - user id
    * @param accountNumber - account number
+   * @param user          - User
    * @return Account
    */
-  Account getAccountById(Integer userId, String accountNumber);
+  Account getAccountById(String accountNumber, User user);
 }

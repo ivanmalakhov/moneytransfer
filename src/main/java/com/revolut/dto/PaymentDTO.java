@@ -8,11 +8,7 @@ import java.math.BigDecimal;
  * Data transfer object with payment information.
  */
 @Data
-public class PaymentDTO {
-  /**
-   * UserId.
-   */
-  private Integer userId;
+public class PaymentDTO extends AbstractDTO {
   /**
    * SrcAccount.
    */

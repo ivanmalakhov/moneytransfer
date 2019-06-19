@@ -1,9 +1,7 @@
 package com.revolut.service;
 
-import com.revolut.data.Account;
-import com.revolut.data.Payment;
-
-import java.math.BigDecimal;
+import com.revolut.entity.Payment;
+import com.revolut.service.processing.params.PaymentParams;
 
 /**
  * Service for working with payment.
@@ -12,30 +10,24 @@ public interface PaymentService {
   /**
    * Transfer money from between tow accounts.
    *
-   * @param srcAccount - source account
-   * @param dstAccount - destination account
-   * @param amount     - amount
+   * @param paymentParams - payment params
    * @return Payment
    */
-  Payment transferMoney(Account srcAccount,
-                        Account dstAccount,
-                        BigDecimal amount);
+  Payment transferMoney(PaymentParams paymentParams);
 
   /**
    * Deposit money to account.
    *
-   * @param account - account
-   * @param amount  - amount
+   * @param paymentParams - payment params
    * @return Payment
    */
-  Payment deposit(Account account, BigDecimal amount);
+  Payment deposit(PaymentParams paymentParams);
 
   /**
    * Withdraw money from account.
    *
-   * @param account - account
-   * @param amount  - amount
+   * @param paymentParams - payment params
    * @return Payment
    */
-  Payment withdraw(Account account, BigDecimal amount);
+  Payment withdraw(PaymentParams paymentParams);
 }

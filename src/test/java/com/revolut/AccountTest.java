@@ -4,13 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.revolut.data.Account;
-import com.revolut.data.User;
 import com.revolut.dto.AccountDTO;
 import com.revolut.dto.Currency;
 import com.revolut.dto.ResponseMessage;
 import com.revolut.dto.ResponseStatus;
 import com.revolut.dto.UserDTO;
+import com.revolut.entity.Account;
+import com.revolut.entity.User;
 import com.revolut.service.Model;
 import com.revolut.service.impl.ModelImpl;
 import org.junit.Before;
@@ -62,7 +62,7 @@ public class AccountTest {
   @Test
   public void noAccountsTest() {
     UserDTO userDTO = new UserDTO();
-    userDTO.setId(user.getId());
+    userDTO.setUserId(user.getId());
     userDTO.setFirstName(user.getFirstName());
     userDTO.setLastName(user.getLastName());
     ResponseMessage responseMessage = model.getAccountsByUser(gson.toJson(userDTO));
@@ -131,7 +131,7 @@ public class AccountTest {
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 
     UserDTO userDTO = new UserDTO();
-    userDTO.setId(user.getId());
+    userDTO.setUserId(user.getId());
     userDTO.setFirstName(user.getFirstName());
     userDTO.setLastName(user.getLastName());
 

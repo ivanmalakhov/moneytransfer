@@ -6,11 +6,7 @@ import lombok.Data;
  * Data transfer object with user information.
  */
 @Data
-public class UserDTO {
-  /**
-   * User id.
-   */
-  private Integer id;
+public class UserDTO extends AbstractDTO {
   /**
    * User first name.
    */

@@ -1,15 +1,17 @@
 package com.revolut;
 
 import com.google.gson.Gson;
-import com.revolut.data.Account;
-import com.revolut.data.User;
+import com.google.gson.JsonObject;
+import com.revolut.dto.AccountDTO;
 import com.revolut.dto.Currency;
 import com.revolut.dto.PaymentDTO;
 import com.revolut.dto.ResponseMessage;
 import com.revolut.dto.ResponseStatus;
+import com.revolut.entity.Account;
+import com.revolut.entity.User;
 import com.revolut.service.Model;
 import com.revolut.service.impl.ModelImpl;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,8 +21,8 @@ import static com.revolut.TestJson.USER_JSON;
 import static com.revolut.TestUtils.createUser;
 import static org.junit.Assert.assertEquals;
 
+@Slf4j
 public class DepositMoneyTest {
-  private final Logger logger = Logger.getLogger(TransferMoneyTest.class);
   private final Gson gson = new Gson();
   private User user;
   private Account account1;
@@ -30,9 +32,24 @@ public class DepositMoneyTest {
   public void init() {
     model = new ModelImpl();
     user = createUser(model, USER_JSON);
-    logger.info("New User: " + user);
-    account1 = model.createAccount(Currency.EUR, user);
-    logger.info("Account1: " + account1);
+    log.info("New User: " + user);
+    account1 = createAccount(Currency.EUR, user);
+    log.info("Account1: " + account1);
+  }
+
+  private Account createAccount(Currency currency, User user) {
+    AccountDTO accountDTO = new AccountDTO();
+    accountDTO.setCurrency(currency);
+    accountDTO.setUserId(user.getId());
+    ResponseMessage responseMessage = model.createAccount(gson.toJson(accountDTO));
+    log.info("New account: {}", responseMessage.getJsonMessage());
+    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
+
+    JsonObject jsonObject = gson.fromJson(responseMessage.getJsonMessage(),
+                                          JsonObject.class)
+            .getAsJsonObject("Info").getAsJsonObject("Account");
+    Account account = gson.fromJson(jsonObject, Account.class);
+    return account;
   }
 
   // deposit money test. in the end we have 10000 eur on source account
@@ -80,6 +97,18 @@ public class DepositMoneyTest {
 
   @Test
   public void depositMoneyOK() {
+    PaymentDTO paymentDTO = new PaymentDTO();
+    paymentDTO.setUserId(user.getId());
+    paymentDTO.setAmount(BigDecimal.valueOf(9999));
+    paymentDTO.setDstAccount(account1.getNumber());
+
+    ResponseMessage responseMessage = model.deposit(gson.toJson(paymentDTO));
+    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
+
+  }
+
+  @Test
+  public void depositMoneyTest() {
     PaymentDTO paymentDTO = new PaymentDTO();
     paymentDTO.setUserId(user.getId());
     paymentDTO.setAmount(BigDecimal.valueOf(9999));
