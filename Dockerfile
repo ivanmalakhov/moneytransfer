@@ -11,6 +11,5 @@ EXPOSE 4567
 COPY target/lib /opt/lib
 COPY target/moneytransfer-1.0-SNAPSHOT.jar /opt
 WORKDIR /opt
-RUN ls
-RUN java -jar moneytransfer-1.0-SNAPSHOT.jar
-#CMD ["java","moneytransfer-1.0-SNAPSHOT"]
+
+ENTRYPOINT java -jar moneytransfer-1.0-SNAPSHOT.jar
