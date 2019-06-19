@@ -58,11 +58,11 @@ public enum ResponseStatus {
   /**
    * Int Code.
    */
-  private int code;
+  private final int code;
   /**
    * Status description.
    */
-  private String description;
+  private final String description;
 
   /**
    * Constructor.

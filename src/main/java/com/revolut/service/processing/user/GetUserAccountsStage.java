@@ -21,7 +21,7 @@ public class GetUserAccountsStage extends ProcessingStage {
   /**
    * User service.
    */
-  private AccountService accountService;
+  private final AccountService accountService;
 
   /**
    * Constructor.
