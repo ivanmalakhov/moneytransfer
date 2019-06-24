@@ -18,7 +18,7 @@ public enum PaymentServiceImpl implements PaymentService {
   /**
    * All payments storage.
    */
-  private List<Payment> payments;
+  private final List<Payment> payments;
 
   /**
    * Constructor.

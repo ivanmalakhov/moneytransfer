@@ -4,7 +4,6 @@ import com.revolut.dto.Currency;
 import com.revolut.entity.Account;
 import com.revolut.entity.User;
 import com.revolut.service.AccountService;
-import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -25,11 +24,7 @@ public enum AccountServiceImpl implements AccountService {
   /**
    * Account storage.
    */
-  private Map<Integer, Set<Account>> userAccounts;
-  /**
-   * Logger.
-   */
-  private Logger logger = Logger.getLogger(AccountServiceImpl.class);
+  private final Map<Integer, Set<Account>> userAccounts;
 
   /**
    * Constructor. Create account storage.

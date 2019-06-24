@@ -19,7 +19,7 @@ public class CheckDstAccountStage extends ProcessingStage {
   /**
    * Account service.
    */
-  private AccountService accountService;
+  private final AccountService accountService;
 
   /**
    * Constructor.

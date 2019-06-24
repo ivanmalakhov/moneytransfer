@@ -19,7 +19,7 @@ public class CreateUserStage extends ProcessingStage {
   /**
    * User service.
    */
-  private UserService userService;
+  private final UserService userService;
 
   /**
    * Constructor.

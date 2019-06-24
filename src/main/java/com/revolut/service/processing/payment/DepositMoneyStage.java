@@ -19,7 +19,7 @@ public class DepositMoneyStage extends ProcessingStage {
   /**
    * Payment service.
    */
-  private PaymentService paymentService;
+  private final PaymentService paymentService;
 
   /**
    * Constructor.

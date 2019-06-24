@@ -2,7 +2,6 @@ package com.revolut.service.impl;
 
 import com.revolut.entity.User;
 import com.revolut.service.UserService;
-import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,11 +17,7 @@ public enum UserServiceImpl implements UserService {
   /**
    * All users storage.
    */
-  private Map<Integer, User> users;
-  /**
-   * Logger.
-   */
-  private Logger logger = Logger.getLogger(UserServiceImpl.class);
+  private final Map<Integer, User> users;
 
   /**
    * Constructor.

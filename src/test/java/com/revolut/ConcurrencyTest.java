@@ -88,8 +88,7 @@ public class ConcurrencyTest {
     JsonObject jsonObject = gson.fromJson(responseMessage.getJsonMessage(),
                                           JsonObject.class)
             .getAsJsonObject("Info").getAsJsonObject("Account");
-    Account account = gson.fromJson(jsonObject, Account.class);
-    return account;
+    return gson.fromJson(jsonObject, Account.class);
   }
 
   private void depositMoney(Account account, BigDecimal amount) {
