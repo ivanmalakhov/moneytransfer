@@ -2,6 +2,8 @@ package com.revolut.service;
 
 import com.revolut.entity.User;
 
+import java.util.List;
+
 /**
  * Service for working with user.
  */
@@ -38,5 +40,12 @@ public interface UserService {
    * @return User
    */
   User getUser(Integer id);
+
+  /**
+   * Get all users.
+   *
+   * @return - list with users
+   */
+  List<User> getUsers();
 
 }

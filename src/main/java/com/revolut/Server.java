@@ -11,6 +11,7 @@ import static spark.Spark.get;
 import static spark.Spark.path;
 import static spark.Spark.port;
 import static spark.Spark.post;
+import static spark.Spark.put;
 import static spark.Spark.stop;
 
 
@@ -36,6 +37,27 @@ class Server {
             logger.info("Received api call"
                                 + q.headers()
                                 + "  ;  " + q.toString()));
+
+    post("/users", (request, response) -> {
+      response.type(JSON_TYPE);
+      ResponseMessage message = model.createUser(request.body());
+      response.status(message.getStatus().getCode());
+      return message.getJsonMessage();
+    });
+    get("/users", (request, response) -> {
+      response.type(JSON_TYPE);
+      ResponseMessage message = model.getUsers(request.body());
+      response.status(message.getStatus().getCode());
+      return message.getJsonMessage();
+    });
+    get("/users/:id", (request, response) -> {
+      //получить данные клиента
+      return null;
+    });
+    put("/users/:id", (request, response) -> {
+      // edit user
+      return null;
+    });
 
     path("/account", () -> {
       post("/create", (request, response) -> {

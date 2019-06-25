@@ -3,7 +3,9 @@ package com.revolut.service.impl;
 import com.revolut.entity.User;
 import com.revolut.service.UserService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,4 +50,10 @@ public enum UserServiceImpl implements UserService {
   public User getUser(final Integer id) {
     return users.get(id);
   }
+
+  @Override
+  public List<User> getUsers() {
+    return new ArrayList(users.values());
+  }
+
 }
