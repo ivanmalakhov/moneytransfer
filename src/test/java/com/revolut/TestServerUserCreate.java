@@ -1,6 +1,8 @@
 package com.revolut;
 
-import org.apache.log4j.Logger;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,8 +11,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static spark.Spark.awaitInitialization;
 
+@Slf4j
 public class TestServerUserCreate {
-  private final Logger logger = Logger.getLogger(TestServerAlive.class);
   private final Server server = new Server();
 
   /**
@@ -28,15 +30,33 @@ public class TestServerUserCreate {
    */
   @Test
   public void testUserCreate() {
+    Gson gson = new Gson();
     String body = "{\n" +
             "  \"firstName\" : \"FirstName\",\n" +
             "  \"secondName\" : \"LastName\"\n" +
             "}";
     ApiTestUtils.TestResponse res = ApiTestUtils.request("POST", 4570, "/users", body);
     assertNotNull(res);
-    logger.info(res.body);
+    log.info("Create user response: {}", res.body);
+    assertEquals(201, res.status);
+    String userId = gson.fromJson(res.body, JsonObject.class)
+            .getAsJsonObject("Info")
+            .getAsJsonObject("User")
+            .get("id").toString();
+
+
+    res = ApiTestUtils.request("GET", 4570, "/users", null);
+    assertNotNull(res);
+    log.info("Get users response: {}", res.body);
     assertEquals(201, res.status);
 
+    res = ApiTestUtils.request("GET",
+                               4570,
+                               "/users/" + userId,
+                               null);
+    assertNotNull(res);
+    log.info("Get users response: {}", res.body);
+    assertEquals(201, res.status);
   }
 
   /**
