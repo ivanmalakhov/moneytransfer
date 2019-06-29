@@ -5,44 +5,24 @@ import com.revolut.dto.ResponseMessage;
 import com.revolut.dto.ResponseStatus;
 import com.revolut.service.UserService;
 import com.revolut.service.processing.params.Params;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Check User.
  */
-public class CheckUserStage extends ProcessingStage {
-  /**
-   * Logger.
-   */
-  private final Logger logger = LoggerFactory.getLogger(CheckUserStage.class);
+@Slf4j
+public class CheckUserStageNew extends ProcessingStage {
   /**
    * User service.
    */
   private final UserService userService;
-  /**
-   * User id.
-   */
-  private String userIdFromRequest;
 
   /**
    * Constructor.
    *
    * @param service user service
    */
-  public CheckUserStage(final UserService service) {
-    this.userService = service;
-  }
-
-  /**
-   * Constructor.
-   *
-   * @param userId  - user id
-   * @param service user service
-   */
-  public CheckUserStage(final String userId,
-                        final UserService service) {
-    this.userIdFromRequest = userId;
+  public CheckUserStageNew(final UserService service) {
     this.userService = service;
   }
 
@@ -57,18 +37,17 @@ public class CheckUserStage extends ProcessingStage {
     AbstractDTO paymentDTO = data.getDto();
     ResponseMessage responseMessage = new ResponseMessage();
     Params params = data.getParams();
-    Integer userId = Integer.valueOf(userIdFromRequest);
-/*    if (userId == null) {
-      logger.error(ResponseStatus.EMPTY_USER_ID.getDescription());
+    if (paymentDTO.getUserId() == null) {
+      log.error(ResponseStatus.EMPTY_USER_ID.getDescription());
       responseMessage.setStatus(ResponseStatus.EMPTY_USER_ID);
       return responseMessage;
-    }*/
-    if (userService.isUserNotExist(userId)) {
-      logger.error(ResponseStatus.USER_DOES_NOT_EXIST.getDescription());
+    }
+    if (userService.isUserNotExist(paymentDTO.getUserId())) {
+      log.error(ResponseStatus.USER_DOES_NOT_EXIST.getDescription());
       responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);
       return responseMessage;
     }
-    params.setUser(userService.getUser(userId));
+    params.setUser(userService.getUser(paymentDTO.getUserId()));
 
     return performNextOperation(data);
   }

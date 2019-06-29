@@ -23,12 +23,22 @@ public interface Model {
   ResponseMessage createUser(String data);
 
   /**
+   * Get User.
+   *
+   * @param user - id user
+   * @param data - request
+   * @return - ResponseMessage
+   */
+  ResponseMessage getUser(String user, String data);
+
+  /**
    * Get all users.
    *
    * @param data Json with entity about new user
    * @return ResponseMessage
    */
   ResponseMessage getUsers(String data);
+
   /**
    * Get All user Account.
    *

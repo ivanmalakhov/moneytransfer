@@ -26,6 +26,7 @@ import com.revolut.service.processing.payment.TransferMoneyStage;
 import com.revolut.service.processing.payment.WithdrawMoneyStage;
 import com.revolut.service.processing.user.CreateUserStage;
 import com.revolut.service.processing.user.GetUserAccountsStage;
+import com.revolut.service.processing.user.GetUserStage;
 import com.revolut.service.processing.user.GetUsersStage;
 import lombok.extern.slf4j.Slf4j;
 
@@ -89,6 +90,17 @@ public final class ModelImpl implements Model {
     StageData stageData = new StageData(data,
                                         new UserDTO(),
                                         new AccountParams());
+    return processingStage.performOperation(stageData);
+  }
+
+  @Override
+  public ResponseMessage getUser(final String user,
+                                 final String data) {
+    ProcessingStage processingStage = new CheckUserStage(user, userService);
+    processingStage.linkWith(new GetUserStage(userService));
+    StageData stageData = new StageData(data,
+                                        new UserDTO(),
+                                        new Params());
     return processingStage.performOperation(stageData);
   }
 
