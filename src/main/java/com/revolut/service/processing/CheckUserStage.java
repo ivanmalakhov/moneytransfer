@@ -22,7 +22,7 @@ public class CheckUserStage extends ProcessingStage {
   /**
    * User id.
    */
-  private String userIdFromRequest;
+  private final String userIdFromRequest;
 
   /**
    * Constructor.

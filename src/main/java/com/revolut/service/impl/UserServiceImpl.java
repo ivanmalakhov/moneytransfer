@@ -53,7 +53,7 @@ public enum UserServiceImpl implements UserService {
 
   @Override
   public List<User> getUsers() {
-    return new ArrayList(users.values());
+    return new ArrayList<>(users.values());
   }
 
 }
