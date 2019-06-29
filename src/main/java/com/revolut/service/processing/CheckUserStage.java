@@ -1,6 +1,5 @@
 package com.revolut.service.processing;
 
-import com.revolut.dto.AbstractDTO;
 import com.revolut.dto.ResponseMessage;
 import com.revolut.dto.ResponseStatus;
 import com.revolut.service.UserService;
@@ -45,15 +44,9 @@ public class CheckUserStage extends ProcessingStage {
    */
   @Override
   public ResponseMessage performOperation(final StageData data) {
-    AbstractDTO paymentDTO = data.getDto();
     ResponseMessage responseMessage = new ResponseMessage();
     Params params = data.getParams();
     Integer userId = Integer.valueOf(userIdFromRequest);
-/*    if (userId == null) {
-      logger.error(ResponseStatus.EMPTY_USER_ID.getDescription());
-      responseMessage.setStatus(ResponseStatus.EMPTY_USER_ID);
-      return responseMessage;
-    }*/
     if (userService.isUserNotExist(userId)) {
       logger.error(ResponseStatus.USER_DOES_NOT_EXIST.getDescription());
       responseMessage.setStatus(ResponseStatus.USER_DOES_NOT_EXIST);

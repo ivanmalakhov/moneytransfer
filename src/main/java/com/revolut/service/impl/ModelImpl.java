@@ -99,7 +99,7 @@ public final class ModelImpl implements Model {
   public ResponseMessage getUser(final String user,
                                  final String data) {
     ProcessingStage processingStage = new CheckUserStage(user, userService);
-    processingStage.linkWith(new GetUserStage(userService));
+    processingStage.linkWith(new GetUserStage());
     StageData stageData = new StageData(data,
                                         new UserDTO(),
                                         new Params());

@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.revolut.dto.ResponseMessage;
 import com.revolut.dto.ResponseStatus;
 import com.revolut.entity.User;
-import com.revolut.service.UserService;
 import com.revolut.service.processing.ProcessingStage;
 import com.revolut.service.processing.StageData;
 import lombok.extern.slf4j.Slf4j;
@@ -15,20 +14,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class GetUserStage extends ProcessingStage {
-  /**
-   * User service.
-   */
-  private UserService userService;
-
-  /**
-   * Constructor.
-   *
-   * @param service - user service.
-   */
-  public GetUserStage(final UserService service) {
-    this.userService = service;
-  }
-
   /**
    * Get user.
    *
