@@ -50,23 +50,27 @@ class Server {
       // edit user
       return null;
     });
-/*
-Старый код. Зарефакторить API
-*/
-    path("/account", () -> {
-      post("/create", (request, response) -> {
-        ResponseMessage message = model.createAccount(request.params(":id"),
-                                                      request.body());
-        response.status(message.getStatus().getCode());
-        return message.getJsonMessage();
-      });
-      get("/get", (request, response) -> {
-        ResponseMessage message = model.getAccount(request.params(":id"),
-                                                   request.body());
-        response.status(message.getStatus().getCode());
-        return message.getJsonMessage();
-      });
+    post("/users/:id/accounts", (request, response) -> {
+      ResponseMessage message = model.createAccount(request.params(":id"),
+                                                    request.body());
+      response.status(message.getStatus().getCode());
+      return message.getJsonMessage();
     });
+    get("/users/:id/accounts", (request, response) -> {
+      ResponseMessage message = model.getAccountsByUser(request.params(":id"),
+                                                        request.body());
+      response.status(message.getStatus().getCode());
+      return message.getJsonMessage();
+    });
+    get("/users/:userId/accounts/:accountId", (request, response) -> {
+      ResponseMessage message = model.getAccount(request.params(":userId"),
+                                                 request.body());
+      response.status(message.getStatus().getCode());
+      return message.getJsonMessage();
+    });
+    /*
+   старый код зарефакторить
+     */
     path("/payment", () -> {
       post("/transfer", (request, response) -> {
         ResponseMessage message = model.transferMoney(request.params(":id"),
@@ -87,16 +91,6 @@ class Server {
         return message.getJsonMessage();
       });
     });
-    path("/user", () -> {
-      get("/accounts", (request, response) -> {
-        ResponseMessage message = model.getAccountsByUser(request.params(":id"),
-                                                          request.body());
-        response.status(message.getStatus().getCode());
-        return message.getJsonMessage();
-      });
-      post("/update", null);
-    });
-
     get("/alive", (request, response) -> "ok");
   }
 
