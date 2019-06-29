@@ -6,10 +6,10 @@ import com.revolut.entity.User;
 import com.revolut.service.AccountService;
 
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -38,7 +38,7 @@ public enum AccountServiceImpl implements AccountService {
     Account account = new Account(UUID.randomUUID(),
                                   "40702"
                                           + currency.code()
-                                          + new Random().
+                                          + new SecureRandom().
                                           nextInt(Integer.MAX_VALUE),
                                   BigDecimal.ZERO,
                                   user,
