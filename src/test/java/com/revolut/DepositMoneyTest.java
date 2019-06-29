@@ -41,25 +41,15 @@ public class DepositMoneyTest {
     AccountDTO accountDTO = new AccountDTO();
     accountDTO.setCurrency(currency);
     accountDTO.setUserId(user.getId());
-    ResponseMessage responseMessage = model.createAccount(gson.toJson(accountDTO));
-    log.info("New account: {}", responseMessage.getJsonMessage());
-    assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
+    ResponseMessage message = model.createAccount(user.getId().toString(),
+                                                  gson.toJson(accountDTO));
+    log.info("New account: {}", message.getJsonMessage());
+    assertEquals(ResponseStatus.SUCCESS, message.getStatus());
 
-    JsonObject jsonObject = gson.fromJson(responseMessage.getJsonMessage(),
+    JsonObject jsonObject = gson.fromJson(message.getJsonMessage(),
                                           JsonObject.class)
             .getAsJsonObject("Info").getAsJsonObject("Account");
     return gson.fromJson(jsonObject, Account.class);
-  }
-
-  // deposit money test. in the end we have 10000 eur on source account
-  @Test
-  public void depositMoneyEmptyUser() {
-    PaymentDTO paymentDTO = new PaymentDTO();
-    paymentDTO.setAmount(BigDecimal.ONE);
-    paymentDTO.setDstAccount(account1.getNumber());
-
-    ResponseMessage responseMessage = model.withdraw(gson.toJson(paymentDTO));
-    assertEquals(ResponseStatus.EMPTY_USER_ID, responseMessage.getStatus());
   }
 
   @Test
@@ -69,7 +59,8 @@ public class DepositMoneyTest {
     paymentDTO.setAmount(BigDecimal.ONE);
     paymentDTO.setDstAccount(account1.getNumber());
 
-    ResponseMessage responseMessage = model.withdraw(gson.toJson(paymentDTO));
+    ResponseMessage responseMessage = model.deposit("987",
+                                                    gson.toJson(paymentDTO));
     assertEquals(ResponseStatus.USER_DOES_NOT_EXIST, responseMessage.getStatus());
   }
 
@@ -79,7 +70,8 @@ public class DepositMoneyTest {
     paymentDTO.setUserId(user.getId());
     paymentDTO.setAmount(BigDecimal.ONE);
 
-    ResponseMessage responseMessage = model.deposit(gson.toJson(paymentDTO));
+    ResponseMessage responseMessage = model.deposit(user.getId().toString(),
+                                                    gson.toJson(paymentDTO));
     assertEquals(ResponseStatus.EMPTY_DEST_ACC_ID, responseMessage.getStatus());
   }
 
@@ -90,8 +82,10 @@ public class DepositMoneyTest {
     paymentDTO.setAmount(BigDecimal.ONE);
     paymentDTO.setDstAccount("FakeAccount");
 
-    ResponseMessage responseMessage = model.deposit(gson.toJson(paymentDTO));
-    assertEquals(ResponseStatus.DEST_ACC_DOES_NOT_EXISTS, responseMessage.getStatus());
+    ResponseMessage responseMessage = model.deposit(user.getId().toString(),
+                                                    gson.toJson(paymentDTO));
+    assertEquals(ResponseStatus.DEST_ACC_DOES_NOT_EXISTS,
+                 responseMessage.getStatus());
   }
 
   @Test
@@ -101,7 +95,8 @@ public class DepositMoneyTest {
     paymentDTO.setAmount(BigDecimal.valueOf(9999));
     paymentDTO.setDstAccount(account1.getNumber());
 
-    ResponseMessage responseMessage = model.deposit(gson.toJson(paymentDTO));
+    ResponseMessage responseMessage = model.deposit(user.getId().toString(),
+                                                    gson.toJson(paymentDTO));
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 
   }
@@ -113,7 +108,8 @@ public class DepositMoneyTest {
     paymentDTO.setAmount(BigDecimal.valueOf(9999));
     paymentDTO.setDstAccount(account1.getNumber());
 
-    ResponseMessage responseMessage = model.deposit(gson.toJson(paymentDTO));
+    ResponseMessage responseMessage = model.deposit(user.getId().toString(),
+                                                    gson.toJson(paymentDTO));
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 
   }

@@ -58,11 +58,12 @@ public final class ModelImpl implements Model {
   }
 
   @Override
-  public ResponseMessage createAccount(final String data) {
+  public ResponseMessage createAccount(final String user,
+                                       final String data) {
 
     ProcessingStage processingStage = new CheckRequestStage();
     processingStage.linkWith(new CreateDTOStage())
-            .linkWith(new CheckUserStage(userService))
+            .linkWith(new CheckUserStage(user, userService))
             .linkWith(new CreateAccountStage(accountService));
     StageData stageData = new StageData(data,
                                         new AccountDTO(),
@@ -71,10 +72,11 @@ public final class ModelImpl implements Model {
   }
 
   @Override
-  public ResponseMessage getAccount(final String data) {
+  public ResponseMessage getAccount(final String user,
+                                    final String data) {
     ProcessingStage processingStage = new CheckRequestStage();
     processingStage.linkWith(new CreateDTOStage())
-            .linkWith(new CheckUserStage(userService))
+            .linkWith(new CheckUserStage(user, userService))
             .linkWith(new GetAccountStage(accountService));
     StageData stageData = new StageData(data,
                                         new AccountDTO(),
@@ -114,10 +116,11 @@ public final class ModelImpl implements Model {
   }
 
   @Override
-  public ResponseMessage getAccountsByUser(final String data) {
+  public ResponseMessage getAccountsByUser(final String user,
+                                           final String data) {
     ProcessingStage processingStage = new CheckRequestStage();
     processingStage.linkWith(new CreateDTOStage())
-            .linkWith(new CheckUserStage(userService))
+            .linkWith(new CheckUserStage(user, userService))
             .linkWith(new GetUserAccountsStage(accountService));
     StageData stageData = new StageData(data,
                                         new UserDTO(),
@@ -126,10 +129,11 @@ public final class ModelImpl implements Model {
   }
 
   @Override
-  public synchronized ResponseMessage transferMoney(final String data) {
+  public synchronized ResponseMessage transferMoney(final String user,
+                                                    final String data) {
     ProcessingStage processingStage = new CheckRequestStage();
     processingStage.linkWith(new CreateDTOStage())
-            .linkWith(new CheckUserStage(userService))
+            .linkWith(new CheckUserStage(user, userService))
             .linkWith(new CheckDstAccountStage(accountService))
             .linkWith(new CheckSrcAccountStage(accountService))
             .linkWith(new CheckAmountStage())
@@ -141,10 +145,11 @@ public final class ModelImpl implements Model {
   }
 
   @Override
-  public synchronized ResponseMessage deposit(final String data) {
+  public synchronized ResponseMessage deposit(final String user,
+                                              final String data) {
     ProcessingStage processingStage = new CheckRequestStage();
     processingStage.linkWith(new CreateDTOStage())
-            .linkWith(new CheckUserStage(userService))
+            .linkWith(new CheckUserStage(user, userService))
             .linkWith(new CheckDstAccountStage(accountService))
             .linkWith(new CheckAmountStage())
             .linkWith(new DepositMoneyStage(paymentService));
@@ -155,10 +160,11 @@ public final class ModelImpl implements Model {
   }
 
   @Override
-  public synchronized ResponseMessage withdraw(final String data) {
+  public synchronized ResponseMessage withdraw(final String user,
+                                               final String data) {
     ProcessingStage processingStage = new CheckRequestStage();
     processingStage.linkWith(new CreateDTOStage())
-            .linkWith(new CheckUserStage(userService))
+            .linkWith(new CheckUserStage(user, userService))
             .linkWith(new CheckSrcAccountStage(accountService))
             .linkWith(new CheckAmountStage())
             .linkWith(new WithdrawMoneyStage(paymentService));

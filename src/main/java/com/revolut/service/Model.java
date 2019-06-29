@@ -9,10 +9,11 @@ public interface Model {
   /**
    * Create new account.
    *
+   * @param user user
    * @param data Json with request entity
    * @return Account
    */
-  ResponseMessage createAccount(String data);
+  ResponseMessage createAccount(String user, String data);
 
   /**
    * Create new User without handler.
@@ -42,40 +43,45 @@ public interface Model {
   /**
    * Get All user Account.
    *
+   * @param user - user id
    * @param data - Json request
    * @return ResponseMessage
    */
-  ResponseMessage getAccountsByUser(String data);
+  ResponseMessage getAccountsByUser(String user, String data);
 
   /**
    * Transfer money from one account to another.
    *
+   * @param user user id
    * @param data json request
    * @return ResponseMessage
    */
-  ResponseMessage transferMoney(String data);
+  ResponseMessage transferMoney(String user, String data);
 
   /**
    * Withdraw money from account.
    *
+   * @param user user id
    * @param data json request
    * @return ResponseMessage
    */
-  ResponseMessage withdraw(String data);
+  ResponseMessage withdraw(String user, String data);
 
   /**
    * Deposit money to account.
    *
+   * @param user user id
    * @param data - json request
    * @return ResponseMessage
    */
-  ResponseMessage deposit(String data);
+  ResponseMessage deposit(String user, String data);
 
   /**
    * Get information about account.
    *
+   * @param user user id
    * @param data - Json request
    * @return ResponseMessage account information
    */
-  ResponseMessage getAccount(String data);
+  ResponseMessage getAccount(String user, String data);
 }

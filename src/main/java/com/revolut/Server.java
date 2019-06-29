@@ -55,41 +55,42 @@ class Server {
 */
     path("/account", () -> {
       post("/create", (request, response) -> {
-        ResponseMessage message = model.createAccount(request.body());
+        ResponseMessage message = model.createAccount(request.params(":id"),
+                                                      request.body());
         response.status(message.getStatus().getCode());
         return message.getJsonMessage();
       });
       get("/get", (request, response) -> {
-        ResponseMessage message = model.getAccount(request.body());
+        ResponseMessage message = model.getAccount(request.params(":id"),
+                                                   request.body());
         response.status(message.getStatus().getCode());
         return message.getJsonMessage();
       });
     });
     path("/payment", () -> {
       post("/transfer", (request, response) -> {
-        ResponseMessage message = model.transferMoney(request.body());
+        ResponseMessage message = model.transferMoney(request.params(":id"),
+                                                      request.body());
         response.status(message.getStatus().getCode());
         return message.getJsonMessage();
       });
       post("/deposit", (request, response) -> {
-        ResponseMessage message = model.deposit(request.body());
+        ResponseMessage message = model.deposit(request.params(":id"),
+                                                request.body());
         response.status(message.getStatus().getCode());
         return message.getJsonMessage();
       });
       post("/withdraw", (request, response) -> {
-        ResponseMessage message = model.withdraw(request.body());
+        ResponseMessage message = model.withdraw(request.params(":id"),
+                                                 request.body());
         response.status(message.getStatus().getCode());
         return message.getJsonMessage();
       });
     });
     path("/user", () -> {
-      post("/create", (request, response) -> {
-        ResponseMessage message = model.createUser(request.body());
-        response.status(message.getStatus().getCode());
-        return message.getJsonMessage();
-      });
       get("/accounts", (request, response) -> {
-        ResponseMessage message = model.getAccountsByUser(request.body());
+        ResponseMessage message = model.getAccountsByUser(request.params(":id"),
+                                                          request.body());
         response.status(message.getStatus().getCode());
         return message.getJsonMessage();
       });

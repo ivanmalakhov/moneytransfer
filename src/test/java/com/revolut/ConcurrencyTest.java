@@ -63,7 +63,8 @@ public class ConcurrencyTest {
     userDTO.setFirstName(user.getFirstName());
     userDTO.setLastName(user.getLastName());
 
-    ResponseMessage responseMessage = model.getAccountsByUser(gson.toJson(userDTO));
+    ResponseMessage responseMessage = model.getAccountsByUser(user.getId().toString(),
+                                                              gson.toJson(userDTO));
     log.info("Account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 
@@ -81,7 +82,8 @@ public class ConcurrencyTest {
     AccountDTO accountDTO = new AccountDTO();
     accountDTO.setCurrency(currency);
     accountDTO.setUserId(user.getId());
-    ResponseMessage responseMessage = model.createAccount(gson.toJson(accountDTO));
+    ResponseMessage responseMessage = model.createAccount(user.getId().toString(),
+                                                          gson.toJson(accountDTO));
     log.info("New account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 
@@ -97,7 +99,8 @@ public class ConcurrencyTest {
     paymentDTO.setAmount(amount);
     paymentDTO.setDstAccount(account.getNumber());
 
-    ResponseMessage responseMessage = model.deposit(gson.toJson(paymentDTO));
+    ResponseMessage responseMessage = model.deposit(user.getId().toString(),
+                                                    gson.toJson(paymentDTO));
     log.info("Deposit money {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
   }
@@ -156,7 +159,8 @@ public class ConcurrencyTest {
     userDTO.setFirstName(user.getFirstName());
     userDTO.setLastName(user.getLastName());
 
-    ResponseMessage responseMessage = model.getAccountsByUser(gson.toJson(userDTO));
+    ResponseMessage responseMessage = model.getAccountsByUser(user.getId().toString(),
+                                                              gson.toJson(userDTO));
     log.info("Account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 

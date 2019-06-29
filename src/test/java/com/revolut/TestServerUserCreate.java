@@ -32,7 +32,7 @@ public class TestServerUserCreate {
             "  \"firstName\" : \"FirstName\",\n" +
             "  \"secondName\" : \"LastName\"\n" +
             "}";
-    ApiTestUtils.TestResponse res = ApiTestUtils.request("POST", 4570, "/user/create", body);
+    ApiTestUtils.TestResponse res = ApiTestUtils.request("POST", 4570, "/users", body);
     assertNotNull(res);
     logger.info(res.body);
     assertEquals(201, res.status);

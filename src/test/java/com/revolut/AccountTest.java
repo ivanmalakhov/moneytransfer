@@ -43,7 +43,8 @@ public class AccountTest {
     accountDTO.setCurrency(Currency.EUR);
     accountDTO.setUserId(123);
 
-    ResponseMessage responseMessage = model.createAccount(gson.toJson(accountDTO));
+    ResponseMessage responseMessage = model.createAccount("123",
+                                                          gson.toJson(accountDTO));
     logger.info("New account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.USER_DOES_NOT_EXIST, responseMessage.getStatus());
 
@@ -54,7 +55,8 @@ public class AccountTest {
     AccountDTO accountDTO = new AccountDTO();
     accountDTO.setCurrency(Currency.EUR);
     accountDTO.setUserId(user.getId());
-    ResponseMessage responseMessage = model.createAccount(gson.toJson(accountDTO));
+    ResponseMessage responseMessage = model.createAccount(user.getId().toString(),
+                                                          gson.toJson(accountDTO));
     logger.info("New account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
   }
@@ -65,7 +67,8 @@ public class AccountTest {
     userDTO.setUserId(user.getId());
     userDTO.setFirstName(user.getFirstName());
     userDTO.setLastName(user.getLastName());
-    ResponseMessage responseMessage = model.getAccountsByUser(gson.toJson(userDTO));
+    ResponseMessage responseMessage = model.getAccountsByUser(user.getId().toString(),
+                                                              gson.toJson(userDTO));
     logger.info("Account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.ACCOUNT_DOES_NOT_EXIST, responseMessage.getStatus());
   }
@@ -77,7 +80,8 @@ public class AccountTest {
     accountDTO.setUserId(user.getId());
 
     ResponseMessage responseMessage;
-    responseMessage = model.createAccount(gson.toJson(accountDTO));
+    responseMessage = model.createAccount(user.getId().toString(),
+                                          gson.toJson(accountDTO));
     logger.info("New account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 
@@ -89,7 +93,8 @@ public class AccountTest {
     AccountDTO getAccountDto = new AccountDTO();
     getAccountDto.setNumber(account.getNumber());
     getAccountDto.setUserId(user.getId());
-    responseMessage = model.getAccount(gson.toJson(getAccountDto));
+    responseMessage = model.getAccount(user.getId().toString(),
+                                       gson.toJson(getAccountDto));
     logger.info("Account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 
@@ -102,14 +107,16 @@ public class AccountTest {
     accountDTO.setUserId(user.getId());
 
     ResponseMessage responseMessage;
-    responseMessage = model.createAccount(gson.toJson(accountDTO));
+    responseMessage = model.createAccount(user.getId().toString(),
+                                          gson.toJson(accountDTO));
     logger.info("New account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 
     AccountDTO getAccountDto = new AccountDTO();
     getAccountDto.setNumber("qqe");
     getAccountDto.setUserId(user.getId());
-    responseMessage = model.getAccount(gson.toJson(getAccountDto));
+    responseMessage = model.getAccount(user.getId().toString(),
+                                       gson.toJson(getAccountDto));
     logger.info("Account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.ACCOUNT_DOES_NOT_EXIST, responseMessage.getStatus());
 
@@ -122,11 +129,13 @@ public class AccountTest {
     accountDTO.setUserId(user.getId());
 
     ResponseMessage responseMessage;
-    responseMessage = model.createAccount(gson.toJson(accountDTO));
+    responseMessage = model.createAccount(user.getId().toString(),
+                                          gson.toJson(accountDTO));
     logger.info("New account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 
-    responseMessage = model.createAccount(gson.toJson(accountDTO));
+    responseMessage = model.createAccount(user.getId().toString(),
+                                          gson.toJson(accountDTO));
     logger.info("New account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 
@@ -135,7 +144,8 @@ public class AccountTest {
     userDTO.setFirstName(user.getFirstName());
     userDTO.setLastName(user.getLastName());
 
-    responseMessage = model.getAccountsByUser(gson.toJson(userDTO));
+    responseMessage = model.getAccountsByUser(user.getId().toString(),
+                                              gson.toJson(userDTO));
     logger.info("Account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 

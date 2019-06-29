@@ -41,7 +41,8 @@ public class WithdrawMoneyTest {
     AccountDTO accountDTO = new AccountDTO();
     accountDTO.setCurrency(currency);
     accountDTO.setUserId(user.getId());
-    ResponseMessage responseMessage = model.createAccount(gson.toJson(accountDTO));
+    ResponseMessage responseMessage = model.createAccount(user.getId().toString(),
+                                                          gson.toJson(accountDTO));
     log.info("New account: {}", responseMessage.getJsonMessage());
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
 
@@ -57,18 +58,9 @@ public class WithdrawMoneyTest {
     paymentDTO.setUserId(user.getId());
     paymentDTO.setAmount(amount);
     paymentDTO.setDstAccount(account1.getNumber());
-    ResponseMessage responseMessage = model.deposit(gson.toJson(paymentDTO));
+    ResponseMessage responseMessage = model.deposit(user.getId().toString(),
+                                                    gson.toJson(paymentDTO));
     log.info("Deposit money payment: " + responseMessage.getJsonMessage());
-  }
-
-  @Test
-  public void withdrawMoneyEmptyUser() {
-    PaymentDTO paymentDTO = new PaymentDTO();
-    paymentDTO.setAmount(BigDecimal.ONE);
-    paymentDTO.setSrcAccount(account1.getNumber());
-
-    ResponseMessage responseMessage = model.withdraw(gson.toJson(paymentDTO));
-    assertEquals(ResponseStatus.EMPTY_USER_ID, responseMessage.getStatus());
   }
 
   @Test
@@ -78,7 +70,8 @@ public class WithdrawMoneyTest {
     paymentDTO.setAmount(BigDecimal.ONE);
     paymentDTO.setSrcAccount(account1.getNumber());
 
-    ResponseMessage responseMessage = model.withdraw(gson.toJson(paymentDTO));
+    ResponseMessage responseMessage = model.withdraw("123",
+                                                     gson.toJson(paymentDTO));
     assertEquals(ResponseStatus.USER_DOES_NOT_EXIST, responseMessage.getStatus());
   }
 
@@ -88,7 +81,8 @@ public class WithdrawMoneyTest {
     paymentDTO.setUserId(user.getId());
     paymentDTO.setAmount(BigDecimal.ONE);
 
-    ResponseMessage responseMessage = model.withdraw(gson.toJson(paymentDTO));
+    ResponseMessage responseMessage = model.withdraw(user.getId().toString(),
+                                                     gson.toJson(paymentDTO));
     assertEquals(ResponseStatus.EMPTY_SRC_ACC_ID, responseMessage.getStatus());
   }
 
@@ -99,7 +93,8 @@ public class WithdrawMoneyTest {
     paymentDTO.setAmount(BigDecimal.ONE);
     paymentDTO.setSrcAccount("FakeAccount");
 
-    ResponseMessage responseMessage = model.withdraw(gson.toJson(paymentDTO));
+    ResponseMessage responseMessage = model.withdraw(user.getId().toString(),
+                                                     gson.toJson(paymentDTO));
     assertEquals(ResponseStatus.SRC_ACC_DOES_NOT_EXISTS, responseMessage.getStatus());
   }
 
@@ -110,7 +105,8 @@ public class WithdrawMoneyTest {
     paymentDTO.setSrcAccount(account1.getNumber());
     paymentDTO.setAmount(BigDecimal.ONE);
 
-    ResponseMessage responseMessage = model.withdraw(gson.toJson(paymentDTO));
+    ResponseMessage responseMessage = model.withdraw(user.getId().toString(),
+                                                     gson.toJson(paymentDTO));
     assertEquals(ResponseStatus.NOT_ENOUGH_MONEY_FOR_A_TRANSACTION,
                  responseMessage.getStatus());
   }
@@ -125,7 +121,8 @@ public class WithdrawMoneyTest {
     paymentDTO.setAmount(amount);
     paymentDTO.setSrcAccount(account1.getNumber());
 
-    ResponseMessage responseMessage = model.withdraw(gson.toJson(paymentDTO));
+    ResponseMessage responseMessage = model.withdraw(user.getId().toString(),
+                                                     gson.toJson(paymentDTO));
     assertEquals(ResponseStatus.SUCCESS, responseMessage.getStatus());
   }
 

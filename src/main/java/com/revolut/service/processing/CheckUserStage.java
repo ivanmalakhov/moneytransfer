@@ -28,15 +28,6 @@ public class CheckUserStage extends ProcessingStage {
   /**
    * Constructor.
    *
-   * @param service user service
-   */
-  public CheckUserStage(final UserService service) {
-    this.userService = service;
-  }
-
-  /**
-   * Constructor.
-   *
    * @param userId  - user id
    * @param service user service
    */
