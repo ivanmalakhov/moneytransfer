@@ -28,6 +28,7 @@ import com.revolut.service.processing.user.CreateUserStage;
 import com.revolut.service.processing.user.GetUserAccountsStage;
 import com.revolut.service.processing.user.GetUserStage;
 import com.revolut.service.processing.user.GetUsersStage;
+import com.revolut.service.processing.user.UpdateUserStage;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -92,6 +93,19 @@ public final class ModelImpl implements Model {
     StageData stageData = new StageData(data,
                                         new UserDTO(),
                                         new AccountParams());
+    return processingStage.performOperation(stageData);
+  }
+
+  @Override
+  public ResponseMessage updateUser(final String user,
+                                    final String data) {
+    ProcessingStage processingStage = new CheckRequestStage();
+    processingStage.linkWith(new CreateDTOStage())
+            .linkWith(new CheckUserStage(user, userService))
+            .linkWith(new UpdateUserStage(userService));
+    StageData stageData = new StageData(data,
+                                        new UserDTO(),
+                                        new Params());
     return processingStage.performOperation(stageData);
   }
 

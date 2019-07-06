@@ -1,5 +1,6 @@
 package com.revolut.service.impl;
 
+import com.revolut.dto.UserDTO;
 import com.revolut.entity.User;
 import com.revolut.service.UserService;
 
@@ -34,6 +35,14 @@ public enum UserServiceImpl implements UserService {
     User user = new User(firstName, lastName);
     users.put(user.getId(), user);
     return user;
+  }
+
+  @Override
+  public User update(final Integer userId, final UserDTO userDTO) {
+    User userForUpdate = users.get(userId);
+    userForUpdate.setFirstName(userDTO.getFirstName());
+    userForUpdate.setLastName(userDTO.getLastName());
+    return userForUpdate;
   }
 
   @Override

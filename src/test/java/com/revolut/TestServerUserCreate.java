@@ -56,7 +56,20 @@ public class TestServerUserCreate {
                                null);
     assertNotNull(res);
     log.info("Get users response: {}", res.body);
+
     assertEquals(201, res.status);
+    res = ApiTestUtils.request("PUT",
+                               4570,
+                               "/user/" + userId,
+                               "{\n" +
+                                       "  \"firstName\" : \"Ivan\",\n" +
+                                       "  \"secondName\" : \"Ivanov\"\n" +
+                                       "}");
+    assertNotNull(res);
+    log.info("Update user response: {}", res.body);
+    assertEquals(201, res.status);
+
+
   }
 
   /**

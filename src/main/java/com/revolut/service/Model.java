@@ -24,6 +24,15 @@ public interface Model {
   ResponseMessage createUser(String data);
 
   /**
+   * Update user information.
+   *
+   * @param user - id user
+   * @param data Json with entity about new user
+   * @return ResponseMessage
+   */
+  ResponseMessage updateUser(String user, String data);
+
+  /**
    * Get User.
    *
    * @param user - id user

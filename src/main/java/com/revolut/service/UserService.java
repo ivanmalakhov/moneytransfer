@@ -1,5 +1,6 @@
 package com.revolut.service;
 
+import com.revolut.dto.UserDTO;
 import com.revolut.entity.User;
 
 import java.util.List;
@@ -16,6 +17,15 @@ public interface UserService {
    * @return User
    */
   User create(String firstName, String lastName);
+
+  /**
+   * Create new user.
+   *
+   * @param userId  - user id
+   * @param userDTO - new user information
+   * @return User - updated user
+   */
+  User update(Integer userId, UserDTO userDTO);
 
   /**
    * Check user.

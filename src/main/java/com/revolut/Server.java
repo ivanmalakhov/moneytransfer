@@ -46,9 +46,11 @@ class Server {
       response.status(message.getStatus().getCode());
       return message.getJsonMessage();
     });
-    put("/users/:id", (request, response) -> {
-      // edit user
-      return null;
+    put("/user/:id", (request, response) -> {
+      ResponseMessage message = model.updateUser(request.params(":id"),
+                                                 request.body());
+      response.status(message.getStatus().getCode());
+      return message.getJsonMessage();
     });
     post("/users/:id/accounts", (request, response) -> {
       ResponseMessage message = model.createAccount(request.params(":id"),

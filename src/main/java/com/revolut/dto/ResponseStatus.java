@@ -53,7 +53,11 @@ public enum ResponseStatus {
   /**
    * Not enough money for a transaction.
    */
-  NOT_ENOUGH_MONEY_FOR_A_TRANSACTION(539, "Not enough money for a transaction");
+  NOT_ENOUGH_MONEY_FOR_A_TRANSACTION(539, "Not enough money for a transaction"),
+  /**
+   * New client cannot be created.
+   */
+  USER_UPDATE_ERROR(540, "User cannot be updated");
 
   /**
    * Int Code.
