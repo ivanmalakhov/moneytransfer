@@ -33,7 +33,7 @@ public class WithdrawMoneyTest {
     model = new ModelImpl();
     user = createUser(model, USER_JSON);
     log.info("New User: " + user);
-    account1 = createAccount(Currency.EUR, user);
+    account1 = createAccount(Currency.USD, user);
     log.info("Account1: " + account1);
   }
 

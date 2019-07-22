@@ -46,11 +46,6 @@ public enum UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean isUserNotExist(final User user) {
-    return !(user != null && users.containsKey(user.getId()));
-  }
-
-  @Override
   public boolean isUserNotExist(final Integer userId) {
     return !(userId != null && users.containsKey(userId));
   }

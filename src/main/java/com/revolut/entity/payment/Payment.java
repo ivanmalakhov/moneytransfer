@@ -1,6 +1,6 @@
-package com.revolut.entity;
+package com.revolut.entity.payment;
 
-import com.revolut.entity.payment.PaymentStatus;
+import com.revolut.entity.Account;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -8,10 +8,10 @@ import java.security.SecureRandom;
 import java.util.Date;
 
 /**
- * Class with information about payment.
+ * Abstract Payment class.
  */
 @Data
-public final class Payment {
+public abstract class Payment implements PaymentAction {
   /**
    * Payment Id.
    */
@@ -54,20 +54,5 @@ public final class Payment {
     this.amount = paymentAmount;
     this.dt = new Date();
     this.status = PaymentStatus.NEW;
-  }
-
-  /**
-   * Execute transfer from one account to another.
-   */
-  public void execute() {
-    if (null != accountFrom) {
-      accountFrom.setBalance(accountFrom
-                                     .getBalance()
-                                     .subtract(this.getAmount()));
-    }
-    if (null != accountTo) {
-      accountTo.setBalance(accountTo.getBalance().add(this.getAmount()));
-    }
-
   }
 }

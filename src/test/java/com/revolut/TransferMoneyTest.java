@@ -35,9 +35,9 @@ public class TransferMoneyTest {
     model = new ModelImpl();
     user = createUser(model, USER_JSON);
     log.info("New User: " + user);
-    account1 = createAccount(Currency.EUR, user);
+    account1 = createAccount(Currency.RUR, user);
     log.info("Account1: " + account1);
-    account2 = createAccount(Currency.EUR, user);
+    account2 = createAccount(Currency.RUR, user);
     log.info("Account2: " + account2);
   }
 

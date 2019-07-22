@@ -12,7 +12,7 @@ import com.revolut.service.processing.StageData;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Update eser information.
+ * Update User information.
  */
 @Slf4j
 public class UpdateUserStage extends ProcessingStage {

@@ -28,14 +28,6 @@ public interface UserService {
   User update(Integer userId, UserDTO userDTO);
 
   /**
-   * Check user.
-   *
-   * @param user - user
-   * @return boolean
-   */
-  boolean isUserNotExist(User user);
-
-  /**
    * Check user by user id.
    *
    * @param userId - user id

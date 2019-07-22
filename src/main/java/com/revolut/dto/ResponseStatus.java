@@ -39,10 +39,6 @@ public enum ResponseStatus {
    */
   EMPTY_SRC_ACC_ID(535, "Empty source account ID"),
   /**
-   * Empty user ID.
-   */
-  EMPTY_USER_ID(536, "Empty user ID"),
-  /**
    * Destination account doesn't exists.
    */
   DEST_ACC_DOES_NOT_EXISTS(537, "Destination account doesn't exists"),

@@ -1,12 +1,14 @@
 package com.revolut.service.processing.params;
 
 import com.revolut.entity.User;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Base params.
  */
-@Data
+@Getter
+@Setter
 public class Params {
   /**
    * User.
